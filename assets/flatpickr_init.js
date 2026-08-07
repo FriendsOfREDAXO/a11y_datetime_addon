@@ -1,4 +1,5 @@
-$(document).on('rex:ready', function () {
+(function () {
+    var initFlatpickr = function () {
     var pickerFactory = null;
     if (typeof a11y_datetime === 'function') {
         pickerFactory = a11y_datetime;
@@ -420,6 +421,10 @@ $(document).on('rex:ready', function () {
     var pickr_elements = document.querySelectorAll('.flatpickr, .a11y_datetime');
 
     pickr_elements.forEach(function (element) {
+        if (element._flatpickr) {
+            return;
+        }
+
         var options = buildBaseOptions(element);
         pickerFactory(element, options);
     });
@@ -427,6 +432,10 @@ $(document).on('rex:ready', function () {
     var pickr_elements2 = document.querySelectorAll('.flatpickr_range, .a11y_datetime_range');
 
     pickr_elements2.forEach(function (element) {
+        if (element._flatpickr) {
+            return;
+        }
+
         var rangeField = element.getAttribute('data-rangefield') || '';
         if (rangeField === '' || !rangePluginFactory) {
             return;
@@ -437,4 +446,15 @@ $(document).on('rex:ready', function () {
         pickerFactory(element, options);
     });
 
-});
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFlatpickr, { once: true });
+    } else {
+        initFlatpickr();
+    }
+
+    if (typeof window.jQuery !== 'undefined') {
+        window.jQuery(document).on('rex:ready', initFlatpickr);
+    }
+})();
