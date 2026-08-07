@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.6] - 2026-08-07
+
+### Changed
+- Entfernte den veralteten Vendor-Ordner `assets/vendor/flatpickr`, der nicht mehr für die aktive Integration benötigt wird.
+- Addon-Version auf `2.2.6` angehoben.
+
 ## [2.2.5] - 2026-08-07
 
 ### Changed
