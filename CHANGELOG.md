@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.5] - 2026-08-07
+
+### Changed
+- Frontend-Initialisierung von `flatpickr_init.js` auf robustes Hybrid-Verhalten umgestellt: Frontend via `DOMContentLoaded`, Backend weiterhin via jQuery-`rex:ready`.
+- `FrontendHelper::includeAssets()` und `FrontendHelper::getAssetsHtml()` um einen vierten Parameter `includeInitScript` erweitert.
+- Helper-Ausgabe um Cache-Busting pro Asset (`?v=<filemtime|addon-version>`) ergänzt, um veraltete Browser-Caches zu vermeiden.
+
+### Documentation
+- README.de und README zur Frontend-Einbindung überarbeitet.
+- Manuelle Einbindung vollständig dokumentiert (inkl. `flatpickr_init.js`, optional ohne Range-Plugin).
+
 ## [2.2.4] - 2026-07-21
 
 ### Changed

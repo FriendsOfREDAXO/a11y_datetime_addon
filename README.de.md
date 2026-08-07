@@ -36,7 +36,7 @@ Einfach über den REDAXO-Installer installieren.
 
 ## Verwendung im Frontend
 
-Das Addon bindet die Assets automatisch nur im Backend ein. Fuer das Frontend gibt es zwei Wege:
+Das Addon bindet die Assets automatisch nur im Backend ein. Für das Frontend gibt es zwei Wege:
 
 1. Direkte Einbindung der Assets in deinem Template.
 2. Nutzung der Hilfsmethode aus dem Addon.
@@ -47,27 +47,50 @@ Das Addon bindet die Assets automatisch nur im Backend ein. Fuer das Frontend gi
 <?php
 use FriendsOfREDAXO\Flatpickr\FrontendHelper;
 
-// Standard: de-Locale, Dark-Theme aktiv, Range-Plugin aktiv
+// Standard: de-Locale, Dark-Theme aktiv, Range-Plugin aktiv, Init-Script aktiv
 FrontendHelper::includeAssets();
 
-// Optional mit Parametern: Locale, Dark-Theme, Range-Plugin
-// FrontendHelper::includeAssets('de', true, true);
+// Optional mit Parametern: Locale, Dark-Theme, Range-Plugin, Init-Script
+// FrontendHelper::includeAssets('de', true, true, true);
 ```
+
+Signatur:
+
+```php
+FrontendHelper::includeAssets(string $locale = 'de', bool $includeDarkTheme = true, bool $includeRangePlugin = true, bool $includeInitScript = true);
+```
+
+Hinweis:
+- Das Init-Script arbeitet im Frontend über `DOMContentLoaded` und im REDAXO-Backend zusätzlich über `rex:ready`.
+- Die Helper-Ausgabe enthält Cache-Busting (`?v=...`) je Asset.
 
 ### Alternative ohne Hilfsmethode
 
 ```php
 <?php
 $addon = rex_addon::get('flatpickr');
-?>
-<link rel="stylesheet" href="<?= $addon->getAssetsUrl('vendor/a11y_datetime/dist/a11y_datetime.min.css') ?>">
-<script src="<?= $addon->getAssetsUrl('vendor/a11y_datetime/dist/a11y_datetime.min.js') ?>"></script>
-`dateFormat` kann in vielen Fällen leer bleiben. Dann wird das Speicherformat passend zum Feldtyp automatisch gesetzt.
-`altFormat` steuert die sichtbare Darstellung, auch in der Listenansicht. Wenn `altFormat` gepflegt ist, wird dieser Formatstring fuer die Listenanzeige verwendet.
+$v = static function (string $asset) use ($addon): string {
+	$path = rex_path::addonAssets('flatpickr', $asset);
+	$version = is_file($path) ? (string) filemtime($path) : (string) $addon->getVersion();
 
-<script src="<?= $addon->getAssetsUrl('vendor/a11y_datetime/dist/l10n/de.js') ?>"></script>
-<script src="<?= $addon->getAssetsUrl('vendor/a11y_datetime/dist/plugins/rangePlugin.js') ?>"></script>
-- Setze den Datenbankfeldtyp manuell, um dem ausgewählten Feldtyp zu entsprechen: Datum = `date`, Datum & Uhrzeit = `datetime`, Zeit = `time`, Datumsbereich = `varchar` oder `text`.
+	return $addon->getAssetsUrl($asset) . '?v=' . rawurlencode($version);
+};
+?>
+<link rel="stylesheet" href="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.css')) ?>">
+<link rel="stylesheet" href="<?= rex_escape($v('vendor/a11y_datetime/dist/themes/dark.css')) ?>">
+
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/plugins/rangePlugin.js')) ?>"></script>
+<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
+```
+
+Manuelle Einbindung ohne Range-Plugin:
+
+```php
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
+<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
 ```
 
 ### Beispiel-Input im Frontend

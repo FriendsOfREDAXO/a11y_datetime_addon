@@ -34,6 +34,65 @@ GitHub: https://github.com/FriendsOfREDAXO/a11y_datetime
 
 Just install it from the REDAXO installer
 
+## Frontend usage
+
+The addon auto-loads its assets only in the REDAXO backend. For frontend pages, use one of these approaches:
+
+1. Include assets directly in your template.
+2. Use the helper method from this addon.
+
+### Recommended helper method
+
+```php
+<?php
+use FriendsOfREDAXO\Flatpickr\FrontendHelper;
+
+// Default: de locale, dark theme enabled, range plugin enabled, init script enabled
+FrontendHelper::includeAssets();
+
+// Optional: locale, dark theme, range plugin, init script
+// FrontendHelper::includeAssets('de', true, true, true);
+```
+
+Signature:
+
+```php
+FrontendHelper::includeAssets(string $locale = 'de', bool $includeDarkTheme = true, bool $includeRangePlugin = true, bool $includeInitScript = true);
+```
+
+Notes:
+- The init script uses `DOMContentLoaded` in frontend contexts and `rex:ready` in REDAXO backend contexts.
+- Helper output includes cache-busting (`?v=...`) for each asset.
+
+### Manual inclusion without helper
+
+```php
+<?php
+$addon = rex_addon::get('flatpickr');
+$v = static function (string $asset) use ($addon): string {
+	$path = rex_path::addonAssets('flatpickr', $asset);
+	$version = is_file($path) ? (string) filemtime($path) : (string) $addon->getVersion();
+
+	return $addon->getAssetsUrl($asset) . '?v=' . rawurlencode($version);
+};
+?>
+<link rel="stylesheet" href="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.css')) ?>">
+<link rel="stylesheet" href="<?= rex_escape($v('vendor/a11y_datetime/dist/themes/dark.css')) ?>">
+
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/plugins/rangePlugin.js')) ?>"></script>
+<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
+```
+
+Manual inclusion without range plugin:
+
+```php
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
+<script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
+<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
+```
+
 ## Howto use in YForm
 
 ```json
