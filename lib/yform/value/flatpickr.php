@@ -229,12 +229,25 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
             $attributes['data-mobileRangeEndLabel'] = rex_i18n::msg('flatpickr_yform_mobile_range_end');
         }
 
-        if ('' !== $dateFormat) {
-            $attributes['data-dateFormat'] = $dateFormat;
+        if ('' === $dateFormat) {
+            $dateFormat = match ($pickerType) {
+                'datetime' => 'Y-m-d H:i',
+                'time' => 'H:i',
+                'date_range' => 'Y-m-d',
+                default => 'Y-m-d',
+            };
         }
+
+        $attributes['data-dateFormat'] = $dateFormat;
 
         if ('' !== $altFormat) {
             $attributes['data-altFormat'] = $altFormat;
+        } elseif ('date' === $pickerType || 'date_range' === $pickerType) {
+            $attributes['data-altFormat'] = 'd.m.Y';
+        } elseif ('time' === $pickerType) {
+            $attributes['data-altFormat'] = 'H:i';
+        } else {
+            $attributes['data-altFormat'] = 'd.m.Y H:i';
         }
 
         if ('' !== $disableDates) {

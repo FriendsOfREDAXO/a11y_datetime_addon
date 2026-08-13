@@ -348,7 +348,9 @@
             past: parseInteger(yearRangeRaw.past, 10),
             future: parseInteger(yearRangeRaw.future, 10)
         };
-        var defaultAltFormat = (noCalendar && enableTime) ? 'H:i' : 'j. F, Y H:i';
+        var defaultDateFormat = (noCalendar && enableTime) ? 'H:i' : ((enableTime) ? 'Y-m-d H:i' : 'Y-m-d');
+        var defaultAltFormat = (noCalendar && enableTime) ? 'H:i' : ((enableTime) ? 'd.m.Y H:i' : 'd.m.Y');
+        var dateFormat = element.getAttribute('data-dateFormat') || defaultDateFormat;
         var altFormat = element.getAttribute('data-altFormat') || defaultAltFormat;
         var timeRules = parseJsonArray(element.getAttribute('data-timeRules'), []);
         var disableList = parseCommaList(element.getAttribute('data-disabled'));
@@ -363,6 +365,7 @@
             showMonths: showMonths,
             yearWheelManualInput: yearWheelManualInput,
             yearRange: yearRange,
+            dateFormat: dateFormat,
             altInput: true,
             altFormat: altFormat,
             time_24hr: true,
@@ -376,11 +379,6 @@
                 applyAccessibilityPatches(instance, locale);
             }
         };
-
-        // Time-only default for dateFormat, may be overridden by data-dateFormat below.
-        if (noCalendar && enableTime) {
-            options.dateFormat = 'H:i';
-        }
 
         if (enableList.length > 0) {
             options.enable = enableList;
