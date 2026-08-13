@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.10] - 2026-08-13
+
+### Changed
+- Frischer Vendor-Refresh für `a11y_datetime` aus dem aktuellen Release `v5.2.7` eingespielt.
+- Addon-Version auf `2.2.10` angehoben.
+
+### Fixed
+- Frontend- und Backend-Asset-Stand auf den aktuellen Release-Build konsolidiert.
+- Vendor-Asset-Ordner und Release-Referenz erneut validiert, damit das Flatpickr-Addon auf einem sauberen, aktuellen Stand basiert.
+
+## [2.2.9] - 2026-08-13
+
+### Changed
+- Vendor-Build für `a11y_datetime` erneut frisch synchronisiert und der Release-Asset-Stand validiert.
+- Addon-Version auf `2.2.9` angehoben.
+
+### Fixed
+- Frontend- und Backend-Asset-Stand konsolidiert, damit der Flatpickr-Release wieder auf einem einheitlichen, frischen Build basiert.
+
 ## [2.2.8] - 2026-08-13
 
 ### Fixed
