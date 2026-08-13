@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.8] - 2026-08-13
+
+### Fixed
+- Das YForm-Value `flatpickr` verhindert jetzt fehlerhafte manuelle Konfigurationen des internen Speicherformats. `date_format` ist nicht mehr konfigurierbar; das Speicherformat wird automatisch aus dem gewählten Feldtyp abgeleitet.
+- Nur das sichtbare `alt_format` bleibt zur Anzeigeanpassung frei konfigurierbar.
+- Die Backend-Initialisierung wurde auf den stabilen REDAXO-Pfad `rex:ready` festgelegt; Frontend bleibt auf `DOMContentLoaded`.
+- Mehrfach-Initialisierung des Pickers in derselben Seite wird durch einen Guard unterbunden, um doppelte Starts zu vermeiden.
+
+### Changed
+- Addon-Version auf `2.2.8` angehoben.
+
+## [2.2.7] - 2026-08-13
+
+### Fixed
+- Reproduzierter Regression im Initializer behoben: kombinierte DOMContentLoaded- und rex:ready-Starts wurden dedupliziert, damit das YForm-Widget nicht mehrfach initialisiert wird.
+- Datetime-/Date-Value-Konfiguration im YForm-Value stabilisiert, um unklare Format-Mischungen bei interner Speicherung und Anzeige zu verhindern.
+
+### Changed
+- Laufzeit- und Konfigurationssicherheit für Flatpickr/YForm-Value verbessert.
+
 ## [2.2.6] - 2026-08-07
 
 ### Changed

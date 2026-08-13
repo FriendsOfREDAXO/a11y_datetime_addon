@@ -76,7 +76,6 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
                 'current_value' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_current_value')],
                 'locale' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_locale'), 'default' => 'de'],
                 'calendar_title' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_calendar_title'), 'notice' => rex_i18n::msg('flatpickr_yform_calendar_title_notice')],
-                'date_format' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_date_format'), 'notice' => rex_i18n::msg('flatpickr_yform_date_format_notice')],
                 'alt_format' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_alt_format'), 'notice' => rex_i18n::msg('flatpickr_yform_alt_format_notice')],
                 'minute_increment' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_minute_increment'), 'default' => '1'],
                 'show_months' => [
@@ -180,8 +179,8 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
         $pickerType = (string) $this->getElement('picker_type');
         $locale = trim((string) $this->getElement('locale'));
         $calendarTitle = trim((string) $this->getElement('calendar_title'));
-        $dateFormat = trim((string) $this->getElement('date_format'));
-        $altFormat = trim((string) $this->getElement('alt_format'));
+        $dateFormat = $this->resolveStorageDateFormat($pickerType);
+        $altFormat = $this->resolveAltFormat($pickerType);
         $disableDates = trim((string) $this->getElement('disable_dates'));
         $disableCallback = trim((string) $this->getElement('disable_callback'));
         $expertJson = trim((string) $this->getElement('expert_json'));
@@ -229,26 +228,8 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
             $attributes['data-mobileRangeEndLabel'] = rex_i18n::msg('flatpickr_yform_mobile_range_end');
         }
 
-        if ('' === $dateFormat) {
-            $dateFormat = match ($pickerType) {
-                'datetime' => 'Y-m-d H:i',
-                'time' => 'H:i',
-                'date_range' => 'Y-m-d',
-                default => 'Y-m-d',
-            };
-        }
-
         $attributes['data-dateFormat'] = $dateFormat;
-
-        if ('' !== $altFormat) {
-            $attributes['data-altFormat'] = $altFormat;
-        } elseif ('date' === $pickerType || 'date_range' === $pickerType) {
-            $attributes['data-altFormat'] = 'd.m.Y';
-        } elseif ('time' === $pickerType) {
-            $attributes['data-altFormat'] = 'H:i';
-        } else {
-            $attributes['data-altFormat'] = 'd.m.Y H:i';
-        }
+        $attributes['data-altFormat'] = $altFormat;
 
         if ('' !== $disableDates) {
             $attributes['data-disabled'] = preg_replace('/\s+/', '', $disableDates) ?? $disableDates;
@@ -307,6 +288,31 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
         }
 
         return in_array($value, ['1', 'true'], true) ? 'true' : 'false';
+    }
+
+    private function resolveStorageDateFormat(string $pickerType): string
+    {
+        return match ($pickerType) {
+            'datetime' => 'Y-m-d H:i',
+            'time' => 'H:i',
+            'date_range' => 'Y-m-d',
+            default => 'Y-m-d',
+        };
+    }
+
+    private function resolveAltFormat(string $pickerType): string
+    {
+        $altFormat = trim((string) $this->getElement('alt_format'));
+        if ('' !== $altFormat) {
+            return $altFormat;
+        }
+
+        return match ($pickerType) {
+            'datetime' => 'd.m.Y H:i',
+            'time' => 'H:i',
+            'date_range' => 'd.m.Y',
+            default => 'd.m.Y',
+        };
     }
 
     private function getDefaultPlaceholder(string $pickerType): string
