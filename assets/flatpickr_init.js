@@ -1,5 +1,10 @@
 (function () {
     var initFlatpickr = function () {
+    if (window.__flatpickrInitRan) {
+        return;
+    }
+    window.__flatpickrInitRan = true;
+
     var pickerFactory = null;
     if (typeof a11y_datetime === 'function') {
         pickerFactory = a11y_datetime;
@@ -419,18 +424,19 @@
     var pickr_elements = document.querySelectorAll('.flatpickr, .a11y_datetime');
 
     pickr_elements.forEach(function (element) {
-        if (element._flatpickr) {
+        if (element._flatpickr || element.getAttribute('data-flatpickr-initialized') === '1') {
             return;
         }
 
         var options = buildBaseOptions(element);
         pickerFactory(element, options);
+        element.setAttribute('data-flatpickr-initialized', '1');
     });
 
     var pickr_elements2 = document.querySelectorAll('.flatpickr_range, .a11y_datetime_range');
 
     pickr_elements2.forEach(function (element) {
-        if (element._flatpickr) {
+        if (element._flatpickr || element.getAttribute('data-flatpickr-initialized') === '1') {
             return;
         }
 
@@ -442,17 +448,22 @@
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
         pickerFactory(element, options);
+        element.setAttribute('data-flatpickr-initialized', '1');
     });
 
     };
+
+    if (typeof window.jQuery !== 'undefined') {
+        if (!window.jQuery(document).data('flatpickr-rex-ready-bound')) {
+            window.jQuery(document).on('rex:ready', initFlatpickr);
+            window.jQuery(document).data('flatpickr-rex-ready-bound', true);
+        }
+        return;
+    }
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initFlatpickr, { once: true });
     } else {
         initFlatpickr();
-    }
-
-    if (typeof window.jQuery !== 'undefined') {
-        window.jQuery(document).on('rex:ready', initFlatpickr);
     }
 })();
