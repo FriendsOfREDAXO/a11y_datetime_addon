@@ -49,8 +49,7 @@ var plugins_confirmDatePlugin = (() => {
     let confirmContainer;
     const confirmButtonCSSClass = "flatpickr-confirm";
     return function(fp) {
-      if (fp.config.noCalendar || fp.isMobile)
-        return {};
+      if (fp.config.noCalendar || fp.isMobile) return {};
       return {
         onKeyDown(_, __, ___, e) {
           const eventTarget = getEventTarget(e);
@@ -79,8 +78,7 @@ var plugins_confirmDatePlugin = (() => {
             const localConfirmContainer = fp.calendarContainer.querySelector(
               `.${confirmButtonCSSClass}`
             );
-            if (!localConfirmContainer)
-              return;
+            if (!localConfirmContainer) return;
             if (dateStr && !fp.config.inline && showCondition && localConfirmContainer)
               return localConfirmContainer.classList.add("visible");
             localConfirmContainer.classList.remove("visible");

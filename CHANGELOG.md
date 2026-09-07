@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.11] - 2026-09-07
+
+### Fixed
+- Vendor-Refresh für `a11y_datetime` auf `v5.2.8` eingespielt: behebt einen Bug im Time-Wheel-Popover, bei dem eine neu ausgewählte Stunde/Minute intermittierend wieder auf den vorherigen Wert zurückspringen konnte, weil ein `blur`-Handler den Klick auf die Wheel-Option unterlaufen hat.
+
+### Changed
+- Addon-Version auf `2.2.11` angehoben.
+
 ## [2.2.10] - 2026-08-13
 
 ### Changed

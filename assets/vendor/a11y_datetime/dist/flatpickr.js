@@ -1,5 +1,5 @@
+/* a11y_datetime v5.2.8, based on flatpickr, @license MIT */
 "use strict";
-/* a11y_datetime v5.2.7, based on flatpickr, @license MIT */
 var __a11y_datetime_bundle = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -20,9 +20,9 @@ var __a11y_datetime_bundle = (() => {
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
   // src/index.ts
-  var src_exports = {};
-  __export(src_exports, {
-    default: () => src_default
+  var index_exports = {};
+  __export(index_exports, {
+    default: () => index_default
   });
 
   // src/types/options.ts
@@ -90,7 +90,7 @@ var __a11y_datetime_bundle = (() => {
     monthSelectorType: "dropdown",
     nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
     noCalendar: false,
-    now: new Date(),
+    now: /* @__PURE__ */ new Date(),
     onChange: [],
     onClose: [],
     onDayCreate: [],
@@ -164,8 +164,7 @@ var __a11y_datetime_bundle = (() => {
     firstDayOfWeek: 0,
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "th";
+      if (s > 3 && s < 21) return "th";
       switch (s % 10) {
         case 1:
           return "st";
@@ -219,8 +218,7 @@ var __a11y_datetime_bundle = (() => {
 
   // src/utils/dom.ts
   function toggleClass(elem, className, bool) {
-    if (bool === true)
-      return elem.classList.add(className);
+    if (bool === true) return elem.classList.add(className);
     elem.classList.remove(className);
   }
   function createElement(tag, className, content) {
@@ -228,17 +226,14 @@ var __a11y_datetime_bundle = (() => {
     className = className || "";
     content = content || "";
     e.className = className;
-    if (content !== void 0)
-      e.textContent = content;
+    if (content !== void 0) e.textContent = content;
     return e;
   }
   function clearNode(node) {
-    while (node.firstChild)
-      node.removeChild(node.firstChild);
+    while (node.firstChild) node.removeChild(node.firstChild);
   }
   function findParent(node, condition) {
-    if (condition(node))
-      return node;
+    if (condition(node)) return node;
     else if (node.parentNode)
       return findParent(node.parentNode, condition);
     return void 0;
@@ -255,8 +250,7 @@ var __a11y_datetime_bundle = (() => {
       numInput.pattern = "\\d*";
     }
     if (opts !== void 0)
-      for (const key in opts)
-        numInput.setAttribute(key, opts[key]);
+      for (const key in opts) numInput.setAttribute(key, opts[key]);
     wrapper.appendChild(numInput);
     wrapper.appendChild(arrowUp);
     wrapper.appendChild(arrowDown);
@@ -351,12 +345,16 @@ var __a11y_datetime_bundle = (() => {
   };
   var tokenRegex = {
     D: "",
+    // locale-dependent, setup on runtime
     F: "",
+    // locale-dependent, setup on runtime
     G: "(\\d\\d|\\d)",
     H: "(\\d\\d|\\d)",
     J: "(\\d\\d|\\d)\\w+",
     K: "",
+    // locale-dependent, setup on runtime
     M: "",
+    // locale-dependent, setup on runtime
     S: "(\\d\\d|\\d)",
     U: "(.+)",
     W: "(\\d\\d|\\d)",
@@ -367,6 +365,7 @@ var __a11y_datetime_bundle = (() => {
     i: "(\\d\\d|\\d)",
     j: "(\\d\\d|\\d)",
     l: "",
+    // locale-dependent, setup on runtime
     m: "(\\d\\d|\\d)",
     n: "(\\d\\d|\\d)",
     s: "(\\d\\d|\\d)",
@@ -375,10 +374,13 @@ var __a11y_datetime_bundle = (() => {
     y: "(\\d{2})"
   };
   var formats = {
+    // get the date in UTC
     Z: (date) => date.toISOString(),
+    // weekday name, short, e.g. Thu
     D: function(date, locale, options) {
       return locale.weekdays.shorthand[formats.w(date, locale, options)];
     },
+    // full month name e.g. January
     F: function(date, locale, options) {
       return monthToStr(
         formats.n(date, locale, options) - 1,
@@ -386,35 +388,54 @@ var __a11y_datetime_bundle = (() => {
         locale
       );
     },
+    // padded hour 1-12
     G: function(date, locale, options) {
       return pad(formats.h(date, locale, options));
     },
+    // hours with leading zero e.g. 03
     H: (date) => pad(date.getHours()),
+    // day (1-30) with ordinal suffix e.g. 1st, 2nd
     J: function(date, locale) {
       return locale.ordinal !== void 0 ? date.getDate() + locale.ordinal(date.getDate()) : date.getDate();
     },
+    // AM/PM
     K: (date, locale) => locale.amPM[int(date.getHours() > 11)],
+    // shorthand month e.g. Jan, Sep, Oct, etc
     M: function(date, locale) {
       return monthToStr(date.getMonth(), true, locale);
     },
+    // seconds 00-59
     S: (date) => pad(date.getSeconds()),
+    // unix timestamp
     U: (date) => date.getTime() / 1e3,
     W: function(date, _, options) {
       return options.getWeek(date);
     },
+    // full year e.g. 2016, padded (0001-9999)
     Y: (date) => pad(date.getFullYear(), 4),
+    // day in month, padded (01-30)
     d: (date) => pad(date.getDate()),
+    // hour from 1-12 (am/pm)
     h: (date) => date.getHours() % 12 ? date.getHours() % 12 : 12,
+    // minutes, padded with leading zero e.g. 09
     i: (date) => pad(date.getMinutes()),
+    // day in month (1-30)
     j: (date) => date.getDate(),
+    // weekday name, full, e.g. Thursday
     l: function(date, locale) {
       return locale.weekdays.longhand[date.getDay()];
     },
+    // padded month number (01-12)
     m: (date) => pad(date.getMonth() + 1),
+    // the month number (1-12)
     n: (date) => date.getMonth() + 1,
+    // seconds 0-59
     s: (date) => date.getSeconds(),
+    // Unix Milliseconds
     u: (date) => date.getTime(),
+    // number of the day of the week
     w: (date) => date.getDay(),
+    // last two digits of year e.g. 16 for 2016
     y: (date) => String(date.getFullYear()).substring(2)
   };
 
@@ -433,20 +454,18 @@ var __a11y_datetime_bundle = (() => {
     ).join("");
   };
   var createDateParser = ({ config = defaults, l10n = english }) => (date, givenFormat, timeless, customLocale) => {
-    if (date !== 0 && !date)
-      return void 0;
+    if (date !== 0 && !date) return void 0;
     const locale = customLocale || l10n;
     let parsedDate;
     const dateOrig = date;
-    if (date instanceof Date)
-      parsedDate = new Date(date.getTime());
+    if (date instanceof Date) parsedDate = new Date(date.getTime());
     else if (typeof date !== "string" && date.toFixed !== void 0)
       parsedDate = new Date(date);
     else if (typeof date === "string") {
       const format = givenFormat || (config || defaults).dateFormat;
       const datestr = String(date).trim();
       if (datestr === "today") {
-        parsedDate = new Date();
+        parsedDate = /* @__PURE__ */ new Date();
         timeless = true;
       } else if (config && config.parseDate) {
         parsedDate = config.parseDate(date, format);
@@ -467,10 +486,9 @@ var __a11y_datetime_bundle = (() => {
                 val: match[++matchIndex]
               });
             }
-          } else if (!isBackSlash)
-            regexStr += ".";
+          } else if (!isBackSlash) regexStr += ".";
         }
-        parsedDate = !config || !config.noCalendar ? new Date(new Date().getFullYear(), 0, 1, 0, 0, 0, 0) : new Date(new Date().setHours(0, 0, 0, 0));
+        parsedDate = !config || !config.noCalendar ? new Date((/* @__PURE__ */ new Date()).getFullYear(), 0, 1, 0, 0, 0, 0) : new Date((/* @__PURE__ */ new Date()).setHours(0, 0, 0, 0));
         ops.forEach(
           ({ fn, val }) => parsedDate = fn(parsedDate, val, locale) || parsedDate
         );
@@ -481,8 +499,7 @@ var __a11y_datetime_bundle = (() => {
       config.errorHandler(new Error(`Invalid date provided: ${dateOrig}`));
       return void 0;
     }
-    if (timeless === true)
-      parsedDate.setHours(0, 0, 0, 0);
+    if (timeless === true) parsedDate.setHours(0, 0, 0, 0);
     return parsedDate;
   };
   function compareDates(date1, date2, timeless = true) {
@@ -525,8 +542,7 @@ var __a11y_datetime_bundle = (() => {
       const maxHr = config.maxDate.getHours();
       const maxMinutes = config.maxDate.getMinutes();
       hours = Math.min(hours, maxHr);
-      if (hours === maxHr)
-        minutes = Math.min(maxMinutes, minutes);
+      if (hours === maxHr) minutes = Math.min(maxMinutes, minutes);
       if (hours === maxHr && minutes === maxMinutes)
         seconds = config.maxDate.getSeconds();
     }
@@ -625,8 +641,7 @@ var __a11y_datetime_bundle = (() => {
       setupInputs();
       setupDates();
       setupHelperFunctions();
-      if (!self.isMobile)
-        build();
+      if (!self.isMobile) build();
       bindEvents();
       if (self.selectedDates.length || self.config.noCalendar) {
         if (self.config.enableTime) {
@@ -649,12 +664,9 @@ var __a11y_datetime_bundle = (() => {
     }
     function getResponsiveShowMonths(maxShowMonths) {
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-      if (maxShowMonths <= 1)
-        return 1;
-      if (viewportWidth > 0 && viewportWidth < 640)
-        return 1;
-      if (viewportWidth > 0 && viewportWidth < 960)
-        return Math.min(maxShowMonths, 2);
+      if (maxShowMonths <= 1) return 1;
+      if (viewportWidth > 0 && viewportWidth < 640) return 1;
+      if (viewportWidth > 0 && viewportWidth < 960) return Math.min(maxShowMonths, 2);
       return maxShowMonths;
     }
     function syncResponsiveShowMonths() {
@@ -666,8 +678,7 @@ var __a11y_datetime_bundle = (() => {
       return false;
     }
     function needsResponsiveMonthRedraw() {
-      if (self.config.noCalendar || self.isMobile)
-        return false;
+      if (self.config.noCalendar || self.isMobile) return false;
       const renderedMonthCount = self.monthElements ? self.monthElements.length : 0;
       return renderedMonthCount !== self.config.showMonths;
     }
@@ -744,7 +755,7 @@ var __a11y_datetime_bundle = (() => {
     }
     function updateTime(e) {
       if (self.selectedDates.length === 0) {
-        const defaultDate = self.config.minDate === void 0 || compareDates(new Date(), self.config.minDate) >= 0 ? new Date() : new Date(self.config.minDate.getTime());
+        const defaultDate = self.config.minDate === void 0 || compareDates(/* @__PURE__ */ new Date(), self.config.minDate) >= 0 ? /* @__PURE__ */ new Date() : new Date(self.config.minDate.getTime());
         const defaults2 = getDefaultHours(self.config);
         defaultDate.setHours(
           defaults2.hours,
@@ -812,24 +823,18 @@ var __a11y_datetime_bundle = (() => {
       return { minYear, maxYear };
     }
     function parseTimeRuleValue(value) {
-      if (value === void 0)
-        return void 0;
-      if (value instanceof Date)
-        return value;
+      if (value === void 0) return void 0;
+      if (value instanceof Date) return value;
       return self.parseDate(value, "H:i:S") || self.parseDate(value, "H:i") || void 0;
     }
     function pickLaterTime(a, b) {
-      if (!a)
-        return b;
-      if (!b)
-        return a;
+      if (!a) return b;
+      if (!b) return a;
       return getTimeInSeconds(a) >= getTimeInSeconds(b) ? a : b;
     }
     function pickEarlierTime(a, b) {
-      if (!a)
-        return b;
-      if (!b)
-        return a;
+      if (!a) return b;
+      if (!b) return a;
       return getTimeInSeconds(a) <= getTimeInSeconds(b) ? a : b;
     }
     function getWeekdayTimeRuleBounds(selectedDate) {
@@ -886,19 +891,16 @@ var __a11y_datetime_bundle = (() => {
       const current = calculateSecondsSinceMidnight(hour, minute, second);
       if (bounds.minTime) {
         const minSeconds = getTimeInSeconds(bounds.minTime);
-        if (current < minSeconds)
-          return false;
+        if (current < minSeconds) return false;
       }
       if (bounds.maxTime) {
         const maxSeconds = getTimeInSeconds(bounds.maxTime);
-        if (current > maxSeconds)
-          return false;
+        if (current > maxSeconds) return false;
       }
       return true;
     }
     function updateTimeWheelDisabledOptions() {
-      if (!self.hourElement || !self.minuteElement)
-        return;
+      if (!self.hourElement || !self.minuteElement) return;
       const currentMinute = parseInt(self.minuteElement.value, 10) || 0;
       const currentSecond = self.secondElement ? parseInt(self.secondElement.value, 10) || 0 : 0;
       const activeMeridiem = self.amPM ? String(self.amPM.textContent || "") : "";
@@ -947,8 +949,7 @@ var __a11y_datetime_bundle = (() => {
     function normalizeMinuteToIncrement(minute) {
       const normalizedMinute = (minute % 60 + 60) % 60;
       const step = Math.max(1, self.config.minuteIncrement || 1);
-      if (step === 1)
-        return normalizedMinute;
+      if (step === 1) return normalizedMinute;
       const lower = Math.floor(normalizedMinute / step) * step;
       const upper = lower + step;
       if (upper >= 60) {
@@ -1038,17 +1039,14 @@ var __a11y_datetime_bundle = (() => {
     }
     function centerWheelSelection(options) {
       const selected = options.find((option) => option.tabIndex === 0) || options.find((option) => option.classList.contains("is-selected"));
-      if (!selected)
-        return;
+      if (!selected) return;
       const column = selected.parentElement;
-      if (!column)
-        return;
+      if (!column) return;
       const targetScrollTop = selected.offsetTop - (column.clientHeight - selected.offsetHeight) / 2;
       column.scrollTop = Math.max(0, targetScrollTop);
     }
     function syncTimeWheelPopover() {
-      if (!timeWheelPopover || !self.hourElement || !self.minuteElement)
-        return;
+      if (!timeWheelPopover || !self.hourElement || !self.minuteElement) return;
       const hourValue = String(parseInt(self.hourElement.value, 10));
       const normalizedMinute = normalizeMinuteToIncrement(
         parseInt(self.minuteElement.value, 10) || 0
@@ -1097,8 +1095,7 @@ var __a11y_datetime_bundle = (() => {
       }
     }
     function setTimeWheelPopoverOpen(open2) {
-      if (!timeWheelPopover)
-        return;
+      if (!timeWheelPopover) return;
       if (open2) {
         timeWheelPopover.removeAttribute("hidden");
         timeWheelPopover.classList.add("is-open");
@@ -1131,17 +1128,14 @@ var __a11y_datetime_bundle = (() => {
         )
       ).filter((element2) => {
         const el = element2;
-        if (el.tabIndex < 0)
-          return false;
-        if (el.disabled === true)
-          return false;
+        if (el.tabIndex < 0) return false;
+        if (el.disabled === true) return false;
         return el.closest("[hidden]") === null;
       });
     }
     function cyclePopoverFocus(popover, current, shift) {
       const focusables = getPopoverFocusableElements(popover);
-      if (!focusables.length)
-        return;
+      if (!focusables.length) return;
       const index = focusables.indexOf(current);
       if (index === -1) {
         focusables[0].focus();
@@ -1181,8 +1175,7 @@ var __a11y_datetime_bundle = (() => {
           button.setAttribute("aria-label", `${label}: ${pad(value)}`);
           button.tabIndex = -1;
           bind(button, "click", () => {
-            if (button.disabled)
-              return;
+            if (button.disabled) return;
             onSelect(value);
           });
           bind(button, "keydown", (event) => {
@@ -1206,8 +1199,7 @@ var __a11y_datetime_bundle = (() => {
                 Math.min(options.length - 1, currentIndex + delta)
               );
               const nextButton = options[nextIndex];
-              if (!nextButton)
-                return;
+              if (!nextButton) return;
               nextButton.focus();
               nextButton.click();
               return;
@@ -1238,8 +1230,7 @@ var __a11y_datetime_bundle = (() => {
         self.l10n.hourAriaLabel,
         hourValues,
         (value) => {
-          if (!self.hourElement)
-            return;
+          if (!self.hourElement) return;
           self.hourElement.value = pad(value);
           updateTime();
           syncTimeWheelPopover();
@@ -1252,8 +1243,7 @@ var __a11y_datetime_bundle = (() => {
         self.l10n.minuteAriaLabel,
         minuteValues,
         (value) => {
-          if (!self.minuteElement)
-            return;
+          if (!self.minuteElement) return;
           self.minuteElement.value = pad(value);
           updateTime();
           syncTimeWheelPopover();
@@ -1268,8 +1258,7 @@ var __a11y_datetime_bundle = (() => {
           self.l10n.secondAriaLabel || "Second",
           secondValues,
           (value) => {
-            if (!self.secondElement)
-              return;
+            if (!self.secondElement) return;
             self.secondElement.value = pad(value);
             updateTime();
             syncTimeWheelPopover();
@@ -1301,10 +1290,8 @@ var __a11y_datetime_bundle = (() => {
           button.setAttribute("aria-label", `AM/PM: ${value}`);
           button.tabIndex = -1;
           bind(button, "click", () => {
-            if (button.disabled)
-              return;
-            if (!self.amPM)
-              return;
+            if (button.disabled) return;
+            if (!self.amPM) return;
             self.amPM.textContent = value;
             updateTime();
             syncTimeWheelPopover();
@@ -1334,8 +1321,7 @@ var __a11y_datetime_bundle = (() => {
       bind(popover, "keydown", (event) => {
         if (event.key === "Tab" || event.keyCode === 9) {
           const target = getEventTarget(event);
-          if (!popover.contains(target))
-            return;
+          if (!popover.contains(target)) return;
           event.preventDefault();
           cyclePopoverFocus(popover, target, event.shiftKey);
         } else if (event.key === "Escape") {
@@ -1368,8 +1354,7 @@ var __a11y_datetime_bundle = (() => {
       if (self.latestSelectedDateObj !== void 0) {
         self.latestSelectedDateObj.setHours(hours % 24, minutes, seconds || 0, 0);
       }
-      if (!self.hourElement || !self.minuteElement || self.isMobile)
-        return;
+      if (!self.hourElement || !self.minuteElement || self.isMobile) return;
       self.hourElement.value = pad(
         !self.config.time_24hr ? (12 + hours) % 12 + 12 * int(hours % 12 === 0) : hours
       );
@@ -1435,8 +1420,7 @@ var __a11y_datetime_bundle = (() => {
         bind(window, "resize", debouncedResize);
       if (window.ontouchstart !== void 0)
         bind(window.document, "touchstart", documentClick);
-      else
-        bind(window.document, "mousedown", documentClick);
+      else bind(window.document, "mousedown", documentClick);
       bind(window.document, "focus", documentClick, { capture: true });
       if (self.config.clickOpens === true) {
         if (self.config.focusOpens === true) {
@@ -1455,7 +1439,17 @@ var __a11y_datetime_bundle = (() => {
       if (self.timeContainer !== void 0 && self.minuteElement !== void 0 && self.hourElement !== void 0) {
         const selText = (e) => getEventTarget(e).select();
         bind(self.timeContainer, ["increment"], updateTime);
-        bind(self.timeContainer, "blur", updateTime, { capture: true });
+        bind(
+          self.timeContainer,
+          "blur",
+          (e) => {
+            const blurredTarget = getEventTarget(e);
+            const isWheelPopoverElement = !!timeWheelPopover && timeWheelPopover.contains(blurredTarget);
+            if (isWheelPopoverElement) return;
+            updateTime(e);
+          },
+          { capture: true }
+        );
         bind(self.timeContainer, "click", timeIncrement);
         bind([self.hourElement, self.minuteElement], ["focus", "click"], selText);
         if (self.secondElement !== void 0)
@@ -1668,8 +1662,7 @@ var __a11y_datetime_bundle = (() => {
           if (self.element.parentNode)
             self.element.parentNode.insertBefore(wrapper, self.element);
           wrapper.appendChild(self.element);
-          if (self.altInput)
-            wrapper.appendChild(self.altInput);
+          if (self.altInput) wrapper.appendChild(self.altInput);
           wrapper.appendChild(self.calendarContainer);
         }
       }
@@ -1712,8 +1705,7 @@ var __a11y_datetime_bundle = (() => {
               "endRange",
               self.selectedDates[1] && compareDates(date, self.selectedDates[1], true) === 0
             );
-            if (className === "nextMonthDay")
-              dayElement.classList.add("inRange");
+            if (className === "nextMonthDay") dayElement.classList.add("inRange");
           }
         }
       } else {
@@ -1739,8 +1731,7 @@ var __a11y_datetime_bundle = (() => {
       }
       targetNode.setAttribute("aria-selected", "true");
       targetNode.focus();
-      if (self.config.mode === "range")
-        onMouseOver(targetNode);
+      if (self.config.mode === "range") onMouseOver(targetNode);
     }
     function getFirstAvailableDay(delta) {
       const startMonth = delta > 0 ? 0 : self.config.showMonths - 1;
@@ -1843,8 +1834,7 @@ var __a11y_datetime_bundle = (() => {
         return;
       }
       clearNode(self.daysContainer);
-      if (self.weekNumbers)
-        clearNode(self.weekNumbers);
+      if (self.weekNumbers) clearNode(self.weekNumbers);
       const frag = document.createDocumentFragment();
       for (let i = 0; i < self.config.showMonths; i++) {
         const d = new Date(self.currentYear, self.currentMonth, 1);
@@ -1858,8 +1848,7 @@ var __a11y_datetime_bundle = (() => {
       }
     }
     function syncMonthYearWheelPopover() {
-      if (!monthYearWheelPopover || !monthYearWheelTrigger)
-        return;
+      if (!monthYearWheelPopover || !monthYearWheelTrigger) return;
       const { minMonth, maxMonth } = getMonthBoundsForYear(self.currentYear);
       monthWheelOptions.forEach((option) => {
         const monthIndex = parseInt(option.dataset.value || "0", 10);
@@ -1895,8 +1884,7 @@ var __a11y_datetime_bundle = (() => {
       }
     }
     function setMonthYearWheelPopoverOpen(open2) {
-      if (!monthYearWheelPopover)
-        return;
+      if (!monthYearWheelPopover) return;
       if (open2) {
         monthYearWheelPopover.removeAttribute("hidden");
         monthYearWheelPopover.classList.add("is-open");
@@ -1914,8 +1902,7 @@ var __a11y_datetime_bundle = (() => {
       monthYearWheelTrigger == null ? void 0 : monthYearWheelTrigger.setAttribute("aria-expanded", "false");
     }
     function setKeyboardHelpOpen(open2) {
-      if (!keyboardHelpPanel || !keyboardHelpButton)
-        return;
+      if (!keyboardHelpPanel || !keyboardHelpButton) return;
       if (open2) {
         keyboardHelpPanel.removeAttribute("hidden");
         keyboardHelpButton.setAttribute("aria-expanded", "true");
@@ -1925,8 +1912,7 @@ var __a11y_datetime_bundle = (() => {
       keyboardHelpButton.setAttribute("aria-expanded", "false");
     }
     function applyMonthYearWheelDelta(kind, delta) {
-      if (delta === 0)
-        return;
+      if (delta === 0) return;
       if (kind === "year") {
         const { minYear, maxYear } = getYearWheelRange();
         const targetYear2 = Math.min(
@@ -2002,8 +1988,7 @@ var __a11y_datetime_bundle = (() => {
         option.setAttribute("aria-selected", "false");
         option.tabIndex = -1;
         bind(option, "click", () => {
-          if (option.disabled)
-            return;
+          if (option.disabled) return;
           self.changeMonth(monthIndex, false, true);
           syncMonthYearWheelPopover();
         });
@@ -2040,14 +2025,10 @@ var __a11y_datetime_bundle = (() => {
       content.appendChild(yearColumn);
       popover.appendChild(content);
       const getWheelKindFromTarget = (target) => {
-        if (!target)
-          return "month";
-        if (target.closest(".flatpickr-year-wheel"))
-          return "year";
-        if (target.closest(".flatpickr-month-wheel"))
-          return "month";
-        if (target === monthYearWheelManualInput)
-          return "year";
+        if (!target) return "month";
+        if (target.closest(".flatpickr-year-wheel")) return "year";
+        if (target.closest(".flatpickr-month-wheel")) return "month";
+        if (target === monthYearWheelManualInput) return "year";
         return "month";
       };
       const focusSelectedInKind = (kind) => {
@@ -2131,8 +2112,7 @@ var __a11y_datetime_bundle = (() => {
       bind(popover, "keydown", (event) => {
         if (event.key === "Tab" || event.keyCode === 9) {
           const target = getEventTarget(event);
-          if (!popover.contains(target))
-            return;
+          if (!popover.contains(target)) return;
           event.preventDefault();
           cyclePopoverFocus(popover, target, event.shiftKey);
         } else if (event.keyCode === 38 || event.keyCode === 40) {
@@ -2144,12 +2124,10 @@ var __a11y_datetime_bundle = (() => {
           focusSelectedInKind(kind);
         } else if (event.keyCode === 37 || event.keyCode === 39) {
           const target = getEventTarget(event);
-          if (!target)
-            return;
+          if (!target) return;
           const isMonthOption = target.closest(".flatpickr-month-wheel") !== null;
           const isYearOption = target.closest(".flatpickr-year-wheel") !== null;
-          if (!isMonthOption && !isYearOption)
-            return;
+          if (!isMonthOption && !isYearOption) return;
           event.preventDefault();
           focusSelectedInKind(isMonthOption ? "year" : "month");
         } else if (event.keyCode === 33 || event.keyCode === 34) {
@@ -2197,8 +2175,7 @@ var __a11y_datetime_bundle = (() => {
       return popover;
     }
     function buildMonthSwitch() {
-      if (!self.monthsDropdownContainer)
-        return;
+      if (!self.monthsDropdownContainer) return;
       if (self.config.showMonths > 1 || self.config.monthSelectorType !== "dropdown")
         return;
       const getMonthBounds = (year) => {
@@ -2213,10 +2190,8 @@ var __a11y_datetime_bundle = (() => {
         return { minMonth: minMonth2, maxMonth: maxMonth2 };
       };
       const { minMonth, maxMonth } = getMonthBounds(self.currentYear);
-      if (self.currentMonth < minMonth)
-        self.currentMonth = minMonth;
-      if (self.currentMonth > maxMonth)
-        self.currentMonth = maxMonth;
+      if (self.currentMonth < minMonth) self.currentMonth = minMonth;
+      if (self.currentMonth > maxMonth) self.currentMonth = maxMonth;
       clearNode(self.monthsDropdownContainer);
       for (let i = minMonth; i <= maxMonth; i++) {
         const option = createElement(
@@ -2264,8 +2239,7 @@ var __a11y_datetime_bundle = (() => {
           monthYearWheelTrigger.setAttribute("aria-haspopup", "dialog");
           monthYearWheelTrigger.setAttribute("aria-expanded", "false");
           bind(monthYearWheelTrigger, "click", () => {
-            if (!monthYearWheelPopover)
-              return;
+            if (!monthYearWheelPopover) return;
             setMonthYearWheelPopoverOpen(
               !monthYearWheelPopover.classList.contains("is-open")
             );
@@ -2462,8 +2436,7 @@ var __a11y_datetime_bundle = (() => {
       self.timeContainer.appendChild(hourInput);
       self.timeContainer.appendChild(separator);
       self.timeContainer.appendChild(minuteInput);
-      if (self.config.time_24hr)
-        self.timeContainer.classList.add("time24hr");
+      if (self.config.time_24hr) self.timeContainer.classList.add("time24hr");
       if (self.config.enableSeconds) {
         self.timeContainer.classList.add("hasSeconds");
         const secondInput = createNumberInput("flatpickr-second");
@@ -2519,8 +2492,7 @@ var __a11y_datetime_bundle = (() => {
           `${calendarInstanceId}-time-wheel-popover`
         );
         bind(timeWheelTrigger, "click", () => {
-          if (!timeWheelPopover)
-            return;
+          if (!timeWheelPopover) return;
           setTimeWheelPopoverOpen(!timeWheelPopover.classList.contains("is-open"));
         });
         timeBar.appendChild(timeLabel);
@@ -2544,8 +2516,7 @@ var __a11y_datetime_bundle = (() => {
           "div",
           "flatpickr-weekdays"
         );
-      else
-        clearNode(self.weekdayContainer);
+      else clearNode(self.weekdayContainer);
       for (let i = self.config.showMonths; i--; ) {
         const container = createElement(
           "div",
@@ -2615,8 +2586,7 @@ var __a11y_datetime_bundle = (() => {
           "is-month-scroll-active"
         );
         monthScrollAnimationTimer = window.setTimeout(() => {
-          if (!self.daysContainer)
-            return;
+          if (!self.daysContainer) return;
           self.daysContainer.classList.remove(
             "is-month-scroll-prev",
             "is-month-scroll-next",
@@ -2637,10 +2607,8 @@ var __a11y_datetime_bundle = (() => {
     }
     function clear(triggerChangeEvent = true, toInitial = true) {
       self.input.value = "";
-      if (self.altInput !== void 0)
-        self.altInput.value = "";
-      if (self.mobileInput !== void 0)
-        self.mobileInput.value = "";
+      if (self.altInput !== void 0) self.altInput.value = "";
+      if (self.mobileInput !== void 0) self.mobileInput.value = "";
       self.selectedDates = [];
       self.latestSelectedDateObj = void 0;
       if (toInitial === true) {
@@ -2673,8 +2641,7 @@ var __a11y_datetime_bundle = (() => {
       triggerEvent("onClose");
     }
     function destroy() {
-      if (self.config !== void 0)
-        triggerEvent("onDestroy");
+      if (self.config !== void 0) triggerEvent("onDestroy");
       if (monthScrollAnimationTimer !== void 0) {
         window.clearTimeout(monthScrollAnimationTimer);
         monthScrollAnimationTimer = void 0;
@@ -2754,7 +2721,9 @@ var __a11y_datetime_bundle = (() => {
       if (self.isOpen && !self.config.inline) {
         const eventTarget = getEventTarget(e);
         const isCalendarElement = isCalendarElem(eventTarget);
-        const isInput = eventTarget === self.input || eventTarget === self.altInput || self.element.contains(eventTarget) || e.path && e.path.indexOf && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
+        const isInput = eventTarget === self.input || eventTarget === self.altInput || self.element.contains(eventTarget) || // web components
+        // e.path is not present in all browsers. circumventing typechecks
+        e.path && e.path.indexOf && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
         const lostFocus = !isInput && !isCalendarElement && !isCalendarElem(e.relatedTarget);
         const isIgnored = !self.config.ignoredFocusElements.some(
           (elem) => elem.contains(eventTarget)
@@ -2813,10 +2782,8 @@ var __a11y_datetime_bundle = (() => {
           return false;
         }
       }
-      if (!self.config.enable && self.config.disable.length === 0)
-        return true;
-      if (dateToCheck === void 0)
-        return false;
+      if (!self.config.enable && self.config.disable.length === 0) return true;
+      if (dateToCheck === void 0) return false;
       const bool = !!self.config.enable, array = (_a = self.config.enable) != null ? _a : self.config.disable;
       for (let i = 0, d; i < array.length; i++) {
         d = array[i];
@@ -2827,7 +2794,10 @@ var __a11y_datetime_bundle = (() => {
         else if (typeof d === "string") {
           const parsed = self.parseDate(d, void 0, true);
           return parsed && parsed.getTime() === dateToCheck.getTime() ? bool : !bool;
-        } else if (typeof d === "object" && dateToCheck !== void 0 && d.from && d.to && dateToCheck.getTime() >= d.from.getTime() && dateToCheck.getTime() <= d.to.getTime())
+        } else if (
+          // disabled by range
+          typeof d === "object" && dateToCheck !== void 0 && d.from && d.to && dateToCheck.getTime() >= d.from.getTime() && dateToCheck.getTime() <= d.to.getTime()
+        )
           return bool;
       }
       return !bool;
@@ -2939,8 +2909,7 @@ var __a11y_datetime_bundle = (() => {
               e.preventDefault();
               updateTime();
               focusAndClose();
-            } else
-              selectDate(e);
+            } else selectDate(e);
             break;
           case 32:
             if (eventTarget === keyboardHelpButton) {
@@ -2996,16 +2965,14 @@ var __a11y_datetime_bundle = (() => {
               const activeElement = getClosestActiveElement();
               if (self.daysContainer !== void 0 && (allowInput === false || activeElement && isInView(activeElement))) {
                 const delta2 = e.keyCode === 39 ? 1 : -1;
-                if (!e.ctrlKey)
-                  focusOnDay(void 0, delta2);
+                if (!e.ctrlKey) focusOnDay(void 0, delta2);
                 else {
                   e.stopPropagation();
                   changeMonth(delta2);
                   focusOnDay(getFirstAvailableDay(1), 0);
                 }
               }
-            } else if (self.hourElement)
-              self.hourElement.focus();
+            } else if (self.hourElement) self.hourElement.focus();
             break;
           case 38:
           case 40:
@@ -3016,13 +2983,11 @@ var __a11y_datetime_bundle = (() => {
                 e.stopPropagation();
                 changeYear(self.currentYear - delta);
                 focusOnDay(getFirstAvailableDay(1), 0);
-              } else if (!isTimeObj)
-                focusOnDay(void 0, delta * 7);
+              } else if (!isTimeObj) focusOnDay(void 0, delta * 7);
             } else if (eventTarget === self.currentYearElement) {
               changeYear(self.currentYear - delta);
             } else if (self.config.enableTime) {
-              if (!isTimeObj && self.hourElement)
-                self.hourElement.focus();
+              if (!isTimeObj && self.hourElement) self.hourElement.focus();
               updateTime(e);
               self._debouncedChange();
             }
@@ -3055,8 +3020,7 @@ var __a11y_datetime_bundle = (() => {
                 !self.config.noCalendar ? keyboardHelpButton : void 0,
                 !self.config.noCalendar ? self.closeButton : void 0
               ].concat(self.pluginElements).filter((el) => {
-                if (!el)
-                  return false;
+                if (!el) return false;
                 const isDisabled = el.disabled === true || el.classList.contains("flatpickr-disabled");
                 const isHidden = el.closest("[hidden]") !== null;
                 const isConnected = el.isConnected;
@@ -3132,10 +3096,8 @@ var __a11y_datetime_bundle = (() => {
       for (let t = rangeStartDate; t < rangeEndDate; t += duration.DAY) {
         if (!isEnabled(new Date(t), true)) {
           containsDisabled = containsDisabled || t > rangeStartDate && t < rangeEndDate;
-          if (t < initialDate && (!minRange || t > minRange))
-            minRange = t;
-          else if (t > initialDate && (!maxRange || t < maxRange))
-            maxRange = t;
+          if (t < initialDate && (!minRange || t > minRange)) minRange = t;
+          else if (t > initialDate && (!maxRange || t < maxRange)) maxRange = t;
         }
       }
       const hoverableCells = Array.from(
@@ -3153,8 +3115,7 @@ var __a11y_datetime_bundle = (() => {
             dayElem.classList.remove(c);
           });
           return;
-        } else if (containsDisabled && !outOfRange)
-          return;
+        } else if (containsDisabled && !outOfRange) return;
         ["startRange", "inRange", "endRange", "notAllowed"].forEach((c) => {
           dayElem.classList.remove(c);
         });
@@ -3248,8 +3209,7 @@ var __a11y_datetime_bundle = (() => {
           redraw();
           if (dateObj !== void 0)
             self.currentYearElement[type] = dateObj.getFullYear().toString();
-          else
-            self.currentYearElement.removeAttribute(type);
+          else self.currentYearElement.removeAttribute(type);
           self.currentYearElement.disabled = !!inverseDateObj && dateObj !== void 0 && inverseDateObj.getFullYear() === dateObj.getFullYear();
         }
       };
@@ -3409,20 +3369,18 @@ var __a11y_datetime_bundle = (() => {
       if (typeof self.config.position === "function") {
         return void self.config.position(self, customPositionElement);
       }
-      if (self.calendarContainer === void 0)
-        return;
+      if (self.calendarContainer === void 0) return;
       triggerEvent("onPreCalendarPosition");
       const positionElement = customPositionElement || self._positionElement;
       const calendarHeight = Array.prototype.reduce.call(
         self.calendarContainer.children,
-        (acc, child) => acc + child.offsetHeight,
+        ((acc, child) => acc + child.offsetHeight),
         0
       ), calendarWidth = self.calendarContainer.offsetWidth, configPos = self.config.position.split(" "), configPosVertical = configPos[0], configPosHorizontal = configPos.length > 1 ? configPos[1] : null, inputBounds = positionElement.getBoundingClientRect(), distanceFromBottom = window.innerHeight - inputBounds.bottom, showOnTop = configPosVertical === "above" || configPosVertical !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
       const top = window.pageYOffset + inputBounds.top + (!showOnTop ? positionElement.offsetHeight + 2 : -calendarHeight - 2);
       toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
       toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
-      if (self.config.inline)
-        return;
+      if (self.config.inline) return;
       let left = window.pageXOffset + inputBounds.left;
       let isCenter = false;
       let isRight = false;
@@ -3440,8 +3398,7 @@ var __a11y_datetime_bundle = (() => {
       const rightMost = left + calendarWidth > window.document.body.offsetWidth;
       const centerMost = right + calendarWidth > window.document.body.offsetWidth;
       toggleClass(self.calendarContainer, "rightMost", rightMost);
-      if (self.config.static)
-        return;
+      if (self.config.static) return;
       self.calendarContainer.style.top = `${top}px`;
       if (!rightMost) {
         self.calendarContainer.style.left = `${left}px`;
@@ -3451,8 +3408,7 @@ var __a11y_datetime_bundle = (() => {
         self.calendarContainer.style.right = `${right}px`;
       } else {
         const doc = getDocumentStyleSheet();
-        if (doc === void 0)
-          return;
+        if (doc === void 0) return;
         const bodyWidth = window.document.body.offsetWidth;
         const centerLeft = Math.max(0, bodyWidth / 2 - calendarWidth / 2);
         const centerBefore = ".flatpickr-calendar.centerMost:before";
@@ -3473,8 +3429,7 @@ var __a11y_datetime_bundle = (() => {
       let editableSheet = null;
       for (let i = 0; i < document.styleSheets.length; i++) {
         const sheet = document.styleSheets[i];
-        if (!sheet.cssRules)
-          continue;
+        if (!sheet.cssRules) continue;
         try {
           sheet.cssRules;
         } catch (err) {
@@ -3491,8 +3446,7 @@ var __a11y_datetime_bundle = (() => {
       return style.sheet;
     }
     function redraw() {
-      if (self.config.noCalendar || self.isMobile)
-        return;
+      if (self.config.noCalendar || self.isMobile) return;
       syncResponsiveShowMonths();
       buildMonthSwitch();
       updateNavigationCurrentMonth();
@@ -3514,22 +3468,18 @@ var __a11y_datetime_bundle = (() => {
       const isKeyboardSelection = e.type === "keydown";
       const isSelectable = (day) => day.classList && day.classList.contains("flatpickr-day") && !day.classList.contains("flatpickr-disabled") && !day.classList.contains("notAllowed");
       const t = findParent(getEventTarget(e), isSelectable);
-      if (t === void 0)
-        return;
+      if (t === void 0) return;
       const target = t;
       const selectedDate = self.latestSelectedDateObj = new Date(
         target.dateObj.getTime()
       );
       const shouldChangeMonth = (selectedDate.getMonth() < self.currentMonth || selectedDate.getMonth() > self.currentMonth + self.config.showMonths - 1) && self.config.mode !== "range";
       self.selectedDateElem = target;
-      if (self.config.mode === "single")
-        self.selectedDates = [selectedDate];
+      if (self.config.mode === "single") self.selectedDates = [selectedDate];
       else if (self.config.mode === "multiple") {
         const selectedIndex = isDateSelected(selectedDate);
-        if (selectedIndex)
-          self.selectedDates.splice(parseInt(selectedIndex), 1);
-        else
-          self.selectedDates.push(selectedDate);
+        if (selectedIndex) self.selectedDates.splice(parseInt(selectedIndex), 1);
+        else self.selectedDates.push(selectedDate);
       } else if (self.config.mode === "range") {
         if (self.selectedDates.length === 2) {
           self.clear(false, false);
@@ -3656,8 +3606,7 @@ var __a11y_datetime_bundle = (() => {
         self.clear(false);
       }
       updateValue(triggerChange2);
-      if (triggerChange2)
-        triggerEvent("onChange");
+      if (triggerChange2) triggerEvent("onChange");
     }
     function parseDateRules(arr) {
       return arr.slice().map((rule) => {
@@ -3680,10 +3629,9 @@ var __a11y_datetime_bundle = (() => {
     }
     function setupDates() {
       self.selectedDates = [];
-      self.now = self.parseDate(self.config.now) || new Date();
+      self.now = self.parseDate(self.config.now) || /* @__PURE__ */ new Date();
       const preloadedDate = self.config.defaultDate || ((self.input.nodeName === "INPUT" || self.input.nodeName === "TEXTAREA") && self.input.placeholder && self.input.value === self.input.placeholder ? null : self.input.value);
-      if (preloadedDate)
-        setSelectedDate(preloadedDate, self.config.dateFormat);
+      if (preloadedDate) setSelectedDate(preloadedDate, self.config.dateFormat);
       if (preloadedDate && self.selectedDates.length === 0 && self._input) {
         self._input.value = "";
       }
@@ -3765,8 +3713,7 @@ var __a11y_datetime_bundle = (() => {
       if (self.input.getAttribute("step"))
         self.mobileInput.step = String(self.input.getAttribute("step"));
       self.input.type = "hidden";
-      if (self.altInput !== void 0)
-        self.altInput.type = "hidden";
+      if (self.altInput !== void 0) self.altInput.type = "hidden";
       try {
         if (self.input.parentNode)
           self.input.parentNode.insertBefore(
@@ -3786,13 +3733,11 @@ var __a11y_datetime_bundle = (() => {
       });
     }
     function toggle(e) {
-      if (self.isOpen === true)
-        return self.close();
+      if (self.isOpen === true) return self.close();
       self.open(e);
     }
     function triggerEvent(event, data) {
-      if (self.config === void 0)
-        return;
+      if (self.config === void 0) return;
       const hooks = self.config[event];
       if (hooks !== void 0 && hooks.length > 0) {
         for (let i = 0; hooks[i] && i < hooks.length; i++)
@@ -3826,8 +3771,7 @@ var __a11y_datetime_bundle = (() => {
       return compareDates(date, self.selectedDates[0]) >= 0 && compareDates(date, self.selectedDates[1]) <= 0;
     }
     function updateNavigationCurrentMonth() {
-      if (self.config.noCalendar || self.isMobile || !self.monthNav)
-        return;
+      if (self.config.noCalendar || self.isMobile || !self.monthNav) return;
       self.yearElements.forEach((yearElement, i) => {
         const d = new Date(self.currentYear, self.currentMonth, 1);
         d.setMonth(self.currentMonth + i);
@@ -3876,8 +3820,7 @@ var __a11y_datetime_bundle = (() => {
       if (self.altInput !== void 0) {
         self.altInput.value = getDateStr(self.config.altFormat);
       }
-      if (triggerChange2 !== false)
-        triggerEvent("onValueUpdate");
+      if (triggerChange2 !== false) triggerEvent("onValueUpdate");
     }
     function onMonthNavClick(e) {
       const eventTarget = getEventTarget(e);
@@ -3905,12 +3848,10 @@ var __a11y_datetime_bundle = (() => {
         const isHourElem = input === self.hourElement, isMinuteElem = input === self.minuteElement;
         if (newValue < min) {
           newValue = max + newValue + int(!isHourElem) + (int(isHourElem) && int(!self.amPM));
-          if (isMinuteElem)
-            incrementNumInput(void 0, -1, self.hourElement);
+          if (isMinuteElem) incrementNumInput(void 0, -1, self.hourElement);
         } else if (newValue > max) {
           newValue = input === self.hourElement ? newValue - max - int(!self.amPM) : min;
-          if (isMinuteElem)
-            incrementNumInput(void 0, 1, self.hourElement);
+          if (isMinuteElem) incrementNumInput(void 0, 1, self.hourElement);
         }
         if (self.amPM && isHourElem && (step === 1 ? newValue + curValue === 23 : Math.abs(newValue - curValue) > step)) {
           self.amPM.textContent = self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
@@ -3927,8 +3868,7 @@ var __a11y_datetime_bundle = (() => {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
       try {
-        if (node.getAttribute("data-fp-omit") !== null)
-          continue;
+        if (node.getAttribute("data-fp-omit") !== null) continue;
         if (node._flatpickr !== void 0) {
           node._flatpickr.destroy();
           node._flatpickr = void 0;
@@ -4005,6 +3945,6 @@ var __a11y_datetime_bundle = (() => {
     window.flatpickr = flatpickr;
     window.a11y_datetime = a11y_datetime;
   }
-  var src_default = a11y_datetime;
-  return __toCommonJS(src_exports);
+  var index_default = a11y_datetime;
+  return __toCommonJS(index_exports);
 })();

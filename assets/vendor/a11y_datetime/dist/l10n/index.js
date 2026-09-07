@@ -19,9 +19,9 @@ var l10n_index = (() => {
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
   // src/l10n/index.ts
-  var l10n_exports = {};
-  __export(l10n_exports, {
-    default: () => l10n_default
+  var index_exports = {};
+  __export(index_exports, {
+    default: () => index_default
   });
 
   // src/l10n/ar.ts
@@ -459,8 +459,7 @@ var l10n_index = (() => {
     },
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "\xE8";
+      if (s > 3 && s < 21) return "\xE8";
       switch (s % 10) {
         case 1:
           return "r";
@@ -655,20 +654,15 @@ var l10n_index = (() => {
     },
     firstDayOfWeek: 1,
     ordinal: (nth) => {
-      if (nth === 1)
-        return "af";
-      if (nth === 2)
-        return "ail";
-      if (nth === 3 || nth === 4)
-        return "ydd";
-      if (nth === 5 || nth === 6)
-        return "ed";
+      if (nth === 1) return "af";
+      if (nth === 2) return "ail";
+      if (nth === 3 || nth === 4) return "ydd";
+      if (nth === 5 || nth === 6) return "ed";
       if (nth >= 7 && nth <= 10 || nth == 12 || nth == 15 || nth == 18 || nth == 20)
         return "fed";
       if (nth == 11 || nth == 13 || nth == 14 || nth == 16 || nth == 17 || nth == 19)
         return "eg";
-      if (nth >= 21 && nth <= 39)
-        return "ain";
+      if (nth >= 21 && nth <= 39) return "ain";
       return "";
     },
     time_24hr: true
@@ -853,8 +847,7 @@ var l10n_index = (() => {
     firstDayOfWeek: 0,
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "th";
+      if (s > 3 && s < 21) return "th";
       switch (s % 10) {
         case 1:
           return "st";
@@ -1298,8 +1291,7 @@ var l10n_index = (() => {
       ]
     },
     ordinal: (nth) => {
-      if (nth > 1)
-        return "";
+      if (nth > 1) return "";
       return "er";
     },
     rangeSeparator: " au ",
@@ -2509,8 +2501,7 @@ var l10n_index = (() => {
     toggleTitle: "Klik om te wisselen",
     time_24hr: true,
     ordinal: (nth) => {
-      if (nth === 1 || nth === 8 || nth >= 20)
-        return "ste";
+      if (nth === 1 || nth === 8 || nth >= 20) return "ste";
       return "de";
     }
   };
@@ -3810,6 +3801,6 @@ var l10n_index = (() => {
     uz: Uzbek,
     uz_latn: UzbekLatin
   };
-  var l10n_default = l10n;
-  return __toCommonJS(l10n_exports);
+  var index_default = l10n;
+  return __toCommonJS(index_exports);
 })();

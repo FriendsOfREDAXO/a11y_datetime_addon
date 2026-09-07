@@ -19,9 +19,9 @@ var plugins_monthSelectPlugin = (() => {
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
   // src/plugins/monthSelect/index.ts
-  var monthSelect_exports = {};
-  __export(monthSelect_exports, {
-    default: () => monthSelect_default
+  var index_exports = {};
+  __export(index_exports, {
+    default: () => index_default
   });
 
   // src/utils/formatting.ts
@@ -29,8 +29,7 @@ var plugins_monthSelectPlugin = (() => {
 
   // src/utils/dom.ts
   function clearNode(node) {
-    while (node.firstChild)
-      node.removeChild(node.firstChild);
+    while (node.firstChild) node.removeChild(node.firstChild);
   }
   function getEventTarget(event) {
     try {
@@ -58,19 +57,16 @@ var plugins_monthSelectPlugin = (() => {
       fp.config.altFormat = config.altFormat;
       const self = { monthsContainer: null };
       function clearUnnecessaryDOMElements() {
-        if (!fp.rContainer)
-          return;
+        if (!fp.rContainer) return;
         clearNode(fp.rContainer);
         for (let index = 0; index < fp.monthElements.length; index++) {
           const element = fp.monthElements[index];
-          if (!element.parentNode)
-            continue;
+          if (!element.parentNode) continue;
           element.parentNode.removeChild(element);
         }
       }
       function build() {
-        if (!fp.rContainer)
-          return;
+        if (!fp.rContainer) return;
         self.monthsContainer = fp._createElement(
           "div",
           "flatpickr-monthSelect-months"
@@ -83,8 +79,7 @@ var plugins_monthSelectPlugin = (() => {
         );
       }
       function buildMonths() {
-        if (!self.monthsContainer)
-          return;
+        if (!self.monthsContainer) return;
         clearNode(self.monthsContainer);
         const frag = document.createDocumentFragment();
         for (let i = 0; i < 12; i++) {
@@ -94,7 +89,7 @@ var plugins_monthSelectPlugin = (() => {
             0,
             i
           );
-          if (month.dateObj.getMonth() === new Date().getMonth() && month.dateObj.getFullYear() === new Date().getFullYear())
+          if (month.dateObj.getMonth() === (/* @__PURE__ */ new Date()).getMonth() && month.dateObj.getFullYear() === (/* @__PURE__ */ new Date()).getFullYear())
             month.classList.add("today");
           month.textContent = monthToStr(i, config.shorthand, fp.l10n);
           month.addEventListener("click", selectMonth);
@@ -103,12 +98,10 @@ var plugins_monthSelectPlugin = (() => {
         self.monthsContainer.appendChild(frag);
         if (fp.config.minDate && fp.currentYear === fp.config.minDate.getFullYear())
           fp.prevMonthNav.classList.add("flatpickr-disabled");
-        else
-          fp.prevMonthNav.classList.remove("flatpickr-disabled");
+        else fp.prevMonthNav.classList.remove("flatpickr-disabled");
         if (fp.config.maxDate && fp.currentYear === fp.config.maxDate.getFullYear())
           fp.nextMonthNav.classList.add("flatpickr-disabled");
-        else
-          fp.nextMonthNav.classList.remove("flatpickr-disabled");
+        else fp.nextMonthNav.classList.remove("flatpickr-disabled");
       }
       function bindEvents() {
         fp._bind(fp.prevMonthNav, "click", (e) => {
@@ -138,10 +131,8 @@ var plugins_monthSelectPlugin = (() => {
         );
       }
       function setCurrentlySelected() {
-        if (!fp.rContainer)
-          return;
-        if (!fp.selectedDates.length)
-          return;
+        if (!fp.rContainer) return;
+        if (!fp.selectedDates.length) return;
         const currentlySelected = fp.rContainer.querySelectorAll(
           ".flatpickr-monthSelect-month.selected"
         );
@@ -189,18 +180,14 @@ var plugins_monthSelectPlugin = (() => {
         e.preventDefault();
         e.stopPropagation();
         const eventTarget = getEventTarget(e);
-        if (!(eventTarget instanceof Element))
-          return;
-        if (eventTarget.classList.contains("flatpickr-disabled"))
-          return;
-        if (eventTarget.classList.contains("notAllowed"))
-          return;
+        if (!(eventTarget instanceof Element)) return;
+        if (eventTarget.classList.contains("flatpickr-disabled")) return;
+        if (eventTarget.classList.contains("notAllowed")) return;
         setMonth(eventTarget.dateObj);
         if (fp.config.closeOnSelect) {
           const single = fp.config.mode === "single";
           const range = fp.config.mode === "range" && fp.selectedDates.length === 2;
-          if (single || range)
-            fp.close();
+          if (single || range) fp.close();
         }
       }
       function setMonth(date) {
@@ -240,8 +227,7 @@ var plugins_monthSelectPlugin = (() => {
         if (!shouldMove && e.keyCode !== 13) {
           return;
         }
-        if (!fp.rContainer || !self.monthsContainer)
-          return;
+        if (!fp.rContainer || !self.monthsContainer) return;
         const currentlySelected = fp.rContainer.querySelector(
           ".flatpickr-monthSelect-month.selected"
         );
@@ -264,8 +250,7 @@ var plugins_monthSelectPlugin = (() => {
         var _a;
         if (((_a = fp.config) == null ? void 0 : _a.mode) === "range" && fp.selectedDates.length === 1)
           fp.clear(false);
-        if (!fp.selectedDates.length)
-          buildMonths();
+        if (!fp.selectedDates.length) buildMonths();
       }
       function stubCurrentMonth() {
         config._stubbedCurrentMonth = fp._initialDate.getMonth();
@@ -273,8 +258,7 @@ var plugins_monthSelectPlugin = (() => {
         fp.currentMonth = config._stubbedCurrentMonth;
       }
       function unstubCurrentMonth() {
-        if (!config._stubbedCurrentMonth)
-          return;
+        if (!config._stubbedCurrentMonth) return;
         fp._initialDate.setMonth(config._stubbedCurrentMonth);
         fp.currentMonth = config._stubbedCurrentMonth;
         delete config._stubbedCurrentMonth;
@@ -318,6 +302,6 @@ var plugins_monthSelectPlugin = (() => {
       };
     };
   }
-  var monthSelect_default = monthSelectPlugin;
-  return __toCommonJS(monthSelect_exports);
+  var index_default = monthSelectPlugin;
+  return __toCommonJS(index_exports);
 })();

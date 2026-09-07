@@ -42,8 +42,7 @@ var plugins_weekSelect = (() => {
     return function(fp) {
       function onDayHover(event) {
         const day = getEventTarget(event);
-        if (!day.classList.contains("flatpickr-day"))
-          return;
+        if (!day.classList.contains("flatpickr-day")) return;
         const days = fp.days.childNodes;
         const dayIndex = day.$i;
         const dayIndSeven = dayIndex / 7;
@@ -54,8 +53,7 @@ var plugins_weekSelect = (() => {
           const date = day2.dateObj;
           if (date > weekEndDay || date < weekStartDay)
             day2.classList.remove("inRange");
-          else
-            day2.classList.add("inRange");
+          else day2.classList.add("inRange");
         }
       }
       function highlightWeek() {

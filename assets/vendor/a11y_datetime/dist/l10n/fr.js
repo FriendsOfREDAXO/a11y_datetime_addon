@@ -72,8 +72,7 @@ var l10n_fr = (() => {
       ]
     },
     ordinal: (nth) => {
-      if (nth > 1)
-        return "";
+      if (nth > 1) return "";
       return "er";
     },
     rangeSeparator: " au ",

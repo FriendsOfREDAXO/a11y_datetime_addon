@@ -892,7 +892,13 @@ function FlatpickrInstance(element, instanceConfig) {
                 return getEventTarget(e).select();
             };
             bind(self.timeContainer, ["increment"], updateTime);
-            bind(self.timeContainer, "blur", updateTime, { capture: true });
+            bind(self.timeContainer, "blur", function (e) {
+                var blurredTarget = getEventTarget(e);
+                var isWheelPopoverElement = !!timeWheelPopover && timeWheelPopover.contains(blurredTarget);
+                if (isWheelPopoverElement)
+                    return;
+                updateTime(e);
+            }, { capture: true });
             bind(self.timeContainer, "click", timeIncrement);
             bind([self.hourElement, self.minuteElement], ["focus", "click"], selText);
             if (self.secondElement !== undefined)

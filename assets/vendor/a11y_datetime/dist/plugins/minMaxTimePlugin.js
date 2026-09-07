@@ -31,10 +31,13 @@ var plugins_minMaxTimePlugin = (() => {
   // src/utils/formatting.ts
   var monthToStr = (monthNumber, shorthand, locale) => locale.months[shorthand ? "shorthand" : "longhand"][monthNumber];
   var formats = {
+    // get the date in UTC
     Z: (date) => date.toISOString(),
+    // weekday name, short, e.g. Thu
     D: function(date, locale, options) {
       return locale.weekdays.shorthand[formats.w(date, locale, options)];
     },
+    // full month name e.g. January
     F: function(date, locale, options) {
       return monthToStr(
         formats.n(date, locale, options) - 1,
@@ -42,35 +45,54 @@ var plugins_minMaxTimePlugin = (() => {
         locale
       );
     },
+    // padded hour 1-12
     G: function(date, locale, options) {
       return pad(formats.h(date, locale, options));
     },
+    // hours with leading zero e.g. 03
     H: (date) => pad(date.getHours()),
+    // day (1-30) with ordinal suffix e.g. 1st, 2nd
     J: function(date, locale) {
       return locale.ordinal !== void 0 ? date.getDate() + locale.ordinal(date.getDate()) : date.getDate();
     },
+    // AM/PM
     K: (date, locale) => locale.amPM[int(date.getHours() > 11)],
+    // shorthand month e.g. Jan, Sep, Oct, etc
     M: function(date, locale) {
       return monthToStr(date.getMonth(), true, locale);
     },
+    // seconds 00-59
     S: (date) => pad(date.getSeconds()),
+    // unix timestamp
     U: (date) => date.getTime() / 1e3,
     W: function(date, _, options) {
       return options.getWeek(date);
     },
+    // full year e.g. 2016, padded (0001-9999)
     Y: (date) => pad(date.getFullYear(), 4),
+    // day in month, padded (01-30)
     d: (date) => pad(date.getDate()),
+    // hour from 1-12 (am/pm)
     h: (date) => date.getHours() % 12 ? date.getHours() % 12 : 12,
+    // minutes, padded with leading zero e.g. 09
     i: (date) => pad(date.getMinutes()),
+    // day in month (1-30)
     j: (date) => date.getDate(),
+    // weekday name, full, e.g. Thursday
     l: function(date, locale) {
       return locale.weekdays.longhand[date.getDay()];
     },
+    // padded month number (01-12)
     m: (date) => pad(date.getMonth() + 1),
+    // the month number (1-12)
     n: (date) => date.getMonth() + 1,
+    // seconds 0-59
     s: (date) => date.getSeconds(),
+    // Unix Milliseconds
     u: (date) => date.getTime(),
+    // number of the day of the week
     w: (date) => date.getDay(),
+    // last two digits of year e.g. 16 for 2016
     y: (date) => String(date.getFullYear()).substring(2)
   };
 
@@ -125,7 +147,7 @@ var plugins_minMaxTimePlugin = (() => {
     monthSelectorType: "dropdown",
     nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
     noCalendar: false,
-    now: new Date(),
+    now: /* @__PURE__ */ new Date(),
     onChange: [],
     onClose: [],
     onDayCreate: [],
@@ -199,8 +221,7 @@ var plugins_minMaxTimePlugin = (() => {
     firstDayOfWeek: 0,
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "th";
+      if (s > 3 && s < 21) return "th";
       switch (s % 10) {
         case 1:
           return "st";
@@ -362,8 +383,7 @@ var plugins_minMaxTimePlugin = (() => {
               maxTime: void 0
             };
             this.set(newMinMax);
-            if (!latest)
-              return;
+            if (!latest) return;
             const { minTime, maxTime } = fp.config;
             if (minTime && compareTimes(latest, minTime) < 0) {
               fp.setDate(

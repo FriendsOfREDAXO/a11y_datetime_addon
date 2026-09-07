@@ -45,8 +45,7 @@ var plugins_rangePlugin = (() => {
         }
         if (secondInput.value) {
           const parsedDate = fp.parseDate(secondInput.value);
-          if (parsedDate)
-            fp.selectedDates.push(parsedDate);
+          if (parsedDate) fp.selectedDates.push(parsedDate);
         }
         secondInput.setAttribute("data-fp-omit", "");
         if (fp.config.clickOpens) {
@@ -127,8 +126,7 @@ var plugins_rangePlugin = (() => {
         onChange() {
           if (!fp.selectedDates.length) {
             setTimeout(() => {
-              if (fp.selectedDates.length)
-                return;
+              if (fp.selectedDates.length) return;
               secondInput.value = "";
               _prevDates = [];
             }, 10);
@@ -144,8 +142,7 @@ var plugins_rangePlugin = (() => {
             secondInput.parentNode && secondInput.parentNode.removeChild(secondInput);
         },
         onValueUpdate(selDates) {
-          if (!secondInput)
-            return;
+          if (!secondInput) return;
           _prevDates = !_prevDates || selDates.length >= _prevDates.length ? [...selDates] : _prevDates;
           if (_prevDates.length > selDates.length) {
             const newSelectedDate = selDates[0];

@@ -77,8 +77,7 @@ var l10n_nl = (() => {
     toggleTitle: "Klik om te wisselen",
     time_24hr: true,
     ordinal: (nth) => {
-      if (nth === 1 || nth === 8 || nth >= 20)
-        return "ste";
+      if (nth === 1 || nth === 8 || nth >= 20) return "ste";
       return "de";
     }
   };

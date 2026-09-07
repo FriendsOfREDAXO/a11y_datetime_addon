@@ -72,8 +72,7 @@ var l10n_cat = (() => {
     },
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "\xE8";
+      if (s > 3 && s < 21) return "\xE8";
       switch (s % 10) {
         case 1:
           return "r";

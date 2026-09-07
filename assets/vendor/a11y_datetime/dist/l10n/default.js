@@ -71,8 +71,7 @@ var l10n_default = (() => {
     firstDayOfWeek: 0,
     ordinal: (nth) => {
       const s = nth % 100;
-      if (s > 3 && s < 21)
-        return "th";
+      if (s > 3 && s < 21) return "th";
       switch (s % 10) {
         case 1:
           return "st";
