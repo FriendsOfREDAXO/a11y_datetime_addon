@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [2.2.12] - 2026-09-14
+
+### Fixed
+- `InvalidArgumentException` beim Rendern des YForm-Felds, wenn der `notice`-Parameter beim Anlegen per `setValueField()`-Code fehlt (#5): `getElement('notice')` liefert für einen fehlenden optionalen Endparameter `false` statt `''` zurück; das Template hat diesen booleschen Wert ungeprüft an `rex_i18n::translate()` übergeben, das einen String erwartet. `value.flatpickr.tpl.php` castet den Wert jetzt vor der Prüfung explizit auf `string`, analog zu allen anderen `getElement()`-Aufrufen in der Feldklasse.
+- Konfigurationszusammenfassung ("Typ: … | Minuten: … | Locale: …") wurde fälschlich auch im Frontend-Formular als Help-Block ausgegeben (#6). Dieser Hinweis ist reine Backend-Redakteurshilfe und wird jetzt nur noch gerendert, wenn `rex::isBackend()` zutrifft.
+
+### Changed
+- Addon-Version auf `2.2.12` angehoben.
+
 ## [2.2.11] - 2026-09-07
 
 ### Fixed

@@ -9,35 +9,40 @@ $inputAttributes ??= [];
 $configSummary ??= [];
 
 $notice = [];
-if ('' !== $this->getElement('notice')) {
-    $notice[] = rex_i18n::translate($this->getElement('notice'), false);
+$noticeElement = (string) $this->getElement('notice');
+if ('' !== $noticeElement) {
+    $notice[] = rex_i18n::translate($noticeElement, false);
 }
 if (isset($this->params['warning_messages'][$this->getId()]) && !$this->params['hide_field_warning_messages']) {
     $notice[] = '<span class="text-warning">' . rex_i18n::translate($this->params['warning_messages'][$this->getId()]) . '</span>';
 }
 
-$summaryBits = [];
-if ('' !== (string) ($configSummary['type'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_type', rex_escape((string) $configSummary['type']));
-}
-if ('' !== (string) ($configSummary['minuteIncrement'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_minute_increment', rex_escape((string) $configSummary['minuteIncrement']));
-}
-if ('' !== (string) ($configSummary['locale'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_locale', rex_escape((string) $configSummary['locale']));
-}
-if ('' !== (string) ($configSummary['calendarTitle'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_calendar_title', rex_escape((string) $configSummary['calendarTitle']));
-}
-if ('' !== (string) ($configSummary['disableCallback'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_disable_callback', rex_escape((string) $configSummary['disableCallback']));
-}
-if ('' !== (string) ($configSummary['expertJson'] ?? '')) {
-    $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_expert_json');
-}
+// Die Konfigurationszusammenfassung ist eine Backend-Hilfe für Redakteure
+// (zeigt z.B. das erwartete Format), im Frontend-Formular hat sie nichts verloren.
+if (rex::isBackend()) {
+    $summaryBits = [];
+    if ('' !== (string) ($configSummary['type'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_type', rex_escape((string) $configSummary['type']));
+    }
+    if ('' !== (string) ($configSummary['minuteIncrement'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_minute_increment', rex_escape((string) $configSummary['minuteIncrement']));
+    }
+    if ('' !== (string) ($configSummary['locale'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_locale', rex_escape((string) $configSummary['locale']));
+    }
+    if ('' !== (string) ($configSummary['calendarTitle'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_calendar_title', rex_escape((string) $configSummary['calendarTitle']));
+    }
+    if ('' !== (string) ($configSummary['disableCallback'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_disable_callback', rex_escape((string) $configSummary['disableCallback']));
+    }
+    if ('' !== (string) ($configSummary['expertJson'] ?? '')) {
+        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_expert_json');
+    }
 
-if ([] !== $summaryBits) {
-    $notice[] = implode(' | ', $summaryBits);
+    if ([] !== $summaryBits) {
+        $notice[] = implode(' | ', $summaryBits);
+    }
 }
 
 $noticeHtml = [] !== $notice ? '<p class="help-block small">' . implode('<br />', $notice) . '</p>' : '';
