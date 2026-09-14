@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.1.0] - 2026-09-14
+
+### Added
+- MForm-Integration: neuer Feldtyp `a11y_datetime` über `MForm::registerFieldType()` (MForm ≥10.0), registriert in `boot.php` wenn MForm verfügbar ist. Nutzung im Modul-Code: `$form->addCustomField('a11y_datetime', $id, ['label' => '...', 'data-enableTime' => 'true'])`. Funktioniert sowohl im klassischen MForm-Formular als auch im Flex-Repeater (neue Klasse `FriendsOfREDAXO\A11yDatetimeAddon\MFormFieldType`, implementiert `FieldTypeInterface`). Anders als das YForm-Value-Feld bietet dieser Feldtyp kein eigenes Manager-Formular für Picker-Optionen — Optionen werden direkt als `data-*`-Attribute übergeben, analog zur manuellen HTML-Einbindung.
+- **Hinweis**: Der MForm-Formbuilder (visuelle Drag&Drop-Oberfläche) hat aktuell keine Registrierungs-API für Custom-Feldtypen aus Fremd-Addons — `a11y_datetime` erscheint daher nicht in der Builder-Palette, nur programmatisch über `addCustomField()` im Modul-Code nutzbar. Ein entsprechender Vorschlag wurde im MForm-Repository eingereicht.
+
+### Fixed
+- Init-Script (`a11y_datetime_init.js`): ein globaler `window.__a11yDatetimeInitRan`-Guard verhinderte, dass nach dem ersten Laden der Seite jemals wieder ein Picker initialisiert wurde — betraf jede Form von dynamisch nachträglich eingefügtem Markup (REDAXO-PJAX-Navigation, MForm-Flex-Repeater-Items nach dem Klonen, Ajax-Inhalte). Der Guard war redundant (die eigentliche Mehrfach-Listener-Bindung war bereits separat über `jQuery(document).data('a11y-datetime-rex-ready-bound')` abgesichert) und wurde ersatzlos entfernt. Betraf auch schon die Vorgängerversion (`flatpickr_init.js`).
+- Vendor-Update auf [a11y_datetime v5.2.9](https://github.com/FriendsOfREDAXO/a11y_datetime/releases/tag/v5.2.9): behebt einen Bug im `documentClick`-Handler, der einen Klick außerhalb des Pickers zwar korrekt erkannte, aber nie tatsächlich `close()` aufrief — der Kalender blieb dadurch dauerhaft offen, unabhängig davon, wohin als Nächstes geklickt wurde. Bei mehreren Picker-Instanzen auf einer Seite (z. B. im MForm-Flex-Repeater) konnten dadurch mehrere Kalender gleichzeitig offen bleiben. Root Cause im Vendor-TypeScript-Quellcode gefunden und dort behoben (nicht nur im Addon umgangen).
+
 ## [3.0.0] - 2026-09-14
 
 ### BREAKING CHANGE

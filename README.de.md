@@ -27,6 +27,14 @@ Website: https://friendsofredaxo.github.io/a11y_datetime/
 
 GitHub: https://github.com/FriendsOfREDAXO/a11y_datetime
 
+## Formular-Addon-Integration
+
+| Addon | Unterstützung |
+|---|---|
+| YForm | Eigenes Manager-Feld `a11y_datetime_addon` mit vollständigem Options-Formular, siehe [Verwendung in YForm](#verwendung-in-yform) |
+| MForm | Eigener Feldtyp `a11y_datetime` ab MForm 10.0 (`addCustomField()`), siehe [Verwendung in MForm](#verwendung-in-mform-ab-mform-100) |
+| Direktes HTML/Module | `class="a11y_datetime"` + `data-*` Attribute, siehe [Verwendung in Modulen](#verwendung-in-modulen) |
+
 ## Wie installieren?
 
 Einfach über den REDAXO-Installer installieren.
@@ -151,6 +159,27 @@ Hinweis:
 - Für den Typ Datumsbereich sollte die Datenbankspalte `varchar` oder `text` sein.
 - Den Datenbankfeldtyp bitte manuell passend zum gewählten Feldtyp setzen: Datum = `date`, Datum & Uhrzeit = `datetime`, Zeit = `time`, Datumsbereich = `varchar` oder `text`.
 - Inline-Edit in der YForm-Listenansicht ist bewusst nicht Teil dieser ersten Version; die Listenansicht liefert derzeit eine kompakte Vorschau statt einer fragilen Direktbearbeitung.
+
+## Verwendung in MForm (ab MForm 10.0)
+
+Wenn MForm installiert ist, registriert das Addon automatisch einen eigenen Feldtyp `a11y_datetime` über `MForm::registerFieldType()`. Optionen werden direkt als `data-*` Attribute übergeben (kein eigenes Manager-Formular wie beim YForm-Feld):
+
+```php
+<?php
+use FriendsOfRedaxo\MForm;
+
+$form = MForm::factory();
+$form->addCustomField('a11y_datetime', 1, [
+    'label' => 'Termin',
+    'data-enableTime' => 'true',
+    'data-locale' => 'de',
+]);
+echo $form->show();
+```
+
+Funktioniert auch im MForm-Flex-Repeater (`addRepeaterElement()`/`addFlexRepeaterElement()`) — geklonte Repeater-Items initialisieren den Picker automatisch über das `rex:ready`-Event, das der Flex-Repeater nach jedem Klonen triggert.
+
+Hinweis: Der visuelle MForm-Formbuilder (Drag&Drop) hat aktuell keine Registrierungs-API für Custom-Feldtypen aus Fremd-Addons, daher erscheint `a11y_datetime` nicht in dessen Palette — nur die programmatische Nutzung über `addCustomField()` im Modul-Code ist möglich.
 
 ## Verwendung in Modulen
 

@@ -27,6 +27,14 @@ Website: https://friendsofredaxo.github.io/a11y_datetime/
 
 GitHub: https://github.com/FriendsOfREDAXO/a11y_datetime
 
+## Form addon integration
+
+| Addon | Support |
+|---|---|
+| YForm | Dedicated Manager field `a11y_datetime_addon` with a full options form, see [Howto use in YForm](#howto-use-in-yform) |
+| MForm | Dedicated field type `a11y_datetime` from MForm 10.0 (`addCustomField()`), see [Howto use in MForm](#howto-use-in-mform-mform-100) |
+| Direct HTML/Modules | `class="a11y_datetime"` + `data-*` attributes, see [Howto use in Modules](#howto-use-in-modules) |
+
 ## Howto install
 
 Just install it from the REDAXO installer
@@ -139,6 +147,27 @@ Notes:
 - For date ranges, the database column should be `varchar` or `text`.
 - Set the database field type manually to match the selected field type: Date = `date`, Date & Time = `datetime`, Time = `time`, Date range = `varchar` or `text`.
 - Inline editing in YForm list view is intentionally not part of this first version; the list view currently provides a compact preview instead of fragile direct editing.
+
+## Howto use in MForm (MForm 10.0+)
+
+If MForm is installed, the addon automatically registers its own field type `a11y_datetime` via `MForm::registerFieldType()`. Options are passed directly as `data-*` attributes (no dedicated Manager form like the YForm field):
+
+```php
+<?php
+use FriendsOfRedaxo\MForm;
+
+$form = MForm::factory();
+$form->addCustomField('a11y_datetime', 1, [
+    'label' => 'Date',
+    'data-enableTime' => 'true',
+    'data-locale' => 'de',
+]);
+echo $form->show();
+```
+
+Also works inside the MForm Flex Repeater (`addRepeaterElement()`/`addFlexRepeaterElement()`) — cloned repeater items initialize the picker automatically via the `rex:ready` event the Flex Repeater triggers after cloning.
+
+Note: the visual MForm form builder (drag & drop) currently has no registration API for custom field types from third-party addons, so `a11y_datetime` does not show up in its palette — only programmatic use via `addCustomField()` in module code is supported.
 
 ## Howto use in Modules
 

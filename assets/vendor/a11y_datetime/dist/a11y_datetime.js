@@ -2738,6 +2738,7 @@ var __a11y_datetime_bundle = (() => {
           }
           if (self.timeContainer !== void 0 && self.minuteElement !== void 0 && self.hourElement !== void 0 && self.input.value !== "" && self.input.value !== void 0 && self.config && self.config.mode === "range" && self.selectedDates.length === 1)
             self.clear(false);
+          self.close();
         }
       }
     }

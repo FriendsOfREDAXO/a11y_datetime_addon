@@ -1,10 +1,5 @@
 (function () {
     var initA11yDatetime = function () {
-    if (window.__a11yDatetimeInitRan) {
-        return;
-    }
-    window.__a11yDatetimeInitRan = true;
-
     if (typeof a11y_datetime !== 'function') {
         return;
     }
