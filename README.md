@@ -2,10 +2,7 @@
 
 a11y_datetime is an accessibility-focused fork of flatpickr.
 
-## Why the addon is still named flatpickr
-
-The addon package name stays `flatpickr` on purpose to keep existing REDAXO installations, installer updates, and project references fully compatible.
-Internally, the frontend assets have been migrated to `a11y_datetime`.
+> **Breaking change in 3.0.0**: this addon was renamed from `flatpickr` to `a11y_datetime_addon` (package name, PHP namespace, YForm field type, asset file names). The CSS marker class is now `a11y_datetime` / `a11y_datetime_range`. See CHANGELOG.md for details and the automatic migration for existing YForm fields.
 
 ## Differences from original flatpickr
 
@@ -45,7 +42,7 @@ The addon auto-loads its assets only in the REDAXO backend. For frontend pages, 
 
 ```php
 <?php
-use FriendsOfREDAXO\Flatpickr\FrontendHelper;
+use FriendsOfREDAXO\A11yDatetimeAddon\FrontendHelper;
 
 // Default: de locale, dark theme enabled, range plugin enabled, init script enabled
 FrontendHelper::includeAssets();
@@ -68,9 +65,9 @@ Notes:
 
 ```php
 <?php
-$addon = rex_addon::get('flatpickr');
+$addon = rex_addon::get('a11y_datetime_addon');
 $v = static function (string $asset) use ($addon): string {
-	$path = rex_path::addonAssets('flatpickr', $asset);
+	$path = rex_path::addonAssets('a11y_datetime_addon', $asset);
 	$version = is_file($path) ? (string) filemtime($path) : (string) $addon->getVersion();
 
 	return $addon->getAssetsUrl($asset) . '?v=' . rawurlencode($version);
@@ -82,7 +79,7 @@ $v = static function (string $asset) use ($addon): string {
 <script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
 <script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
 <script src="<?= rex_escape($v('vendor/a11y_datetime/dist/plugins/rangePlugin.js')) ?>"></script>
-<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
+<script src="<?= rex_escape($v('a11y_datetime_init.js')) ?>"></script>
 ```
 
 Manual inclusion without range plugin:
@@ -90,24 +87,18 @@ Manual inclusion without range plugin:
 ```php
 <script src="<?= rex_escape($v('vendor/a11y_datetime/dist/a11y_datetime.min.js')) ?>"></script>
 <script src="<?= rex_escape($v('vendor/a11y_datetime/dist/l10n/de.js')) ?>"></script>
-<script src="<?= rex_escape($v('flatpickr_init.js')) ?>"></script>
+<script src="<?= rex_escape($v('a11y_datetime_init.js')) ?>"></script>
 ```
 
 ## Howto use in YForm
 
 ```json
-{"class": "flatpickr","data-locale":"de","data-enableTime":"true"}
-```
-
-You can also use the new class name:
-
-```json
 {"class": "a11y_datetime","data-locale":"de","data-enableTime":"true"}
 ```
 
-### Dedicated YForm field `flatpickr`
+### Dedicated YForm field `a11y_datetime_addon`
 
-The addon ships with its own YForm value field `flatpickr` for common picker setups directly in YForm Manager.
+The addon ships with its own YForm value field `a11y_datetime_addon` for common picker setups directly in YForm Manager.
 
 Covered standard modes:
 
@@ -130,7 +121,7 @@ Covered standard settings:
 - `showMonthNavArrows`
 - `showMonths` - maximum number of calendar panels shown at the same time; on narrow widths it is automatically reduced to 1 or 2
 - `yearWheelManualInput`
-- `yearRange` - year range relative to today, e.g. `{"past":10,"future":10}` for 10 years back and 10 years ahead
+- Year range relative to today, set via two plain number fields ("Years back" / "Years ahead") — no JSON typing required in the Manager form
 - fixed disabled dates
 
 For special cases, the field also provides an expert JSON textarea. That JSON is merged after the common settings.
@@ -138,10 +129,10 @@ For special cases, the field also provides an expert JSON textarea. That JSON is
 `dateFormat` can often stay empty. In that case, the storage format is chosen automatically based on the selected field type.
 `altFormat` controls the visible display, including the list view. If `altFormat` is filled, that format string is used for list output.
 
-External disabled-date logic can be attached via a global JavaScript callback path such as `window.MyApp.flatpickrDisabledDates`. The callback may return:
+External disabled-date logic can be attached via a global JavaScript callback path such as `window.MyApp.a11yDatetimeDisabledDates`. The callback may return:
 
 - an array of disable values
-- a Flatpickr disable callback function
+- a picker disable callback function
 
 Notes:
 
@@ -152,7 +143,7 @@ Notes:
 ## Howto use in Modules
 
 ```html
-<input type="date" class="form-control flatpickr" data-locale="de" data-enableTime="true" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]">
+<input type="date" class="form-control a11y_datetime" data-locale="de" data-enableTime="true" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]">
 ```
 
 Optional: enable opening on focus for a field:
@@ -161,17 +152,12 @@ Optional: enable opening on focus for a field:
 <input type="text" class="form-control a11y_datetime" data-focusOpens="true" name="event_start">
 ```
 
-## Howto RangeField over 2 input fields 
-
-```json
-{"class": "flatpickr_range","data-locale":"de","data-enableTime":"true", "data-rangefield":"#id"}
-```
-
-or
+## Howto RangeField over 2 input fields
 
 ```json
 {"class": "a11y_datetime_range","data-locale":"de","data-enableTime":"true", "data-rangefield":"#id"}
 ```
+
 ## Set the view just for date fields. 
 
 If you don't want to see the time in a date-field, don't use the timepicker and set an alternative View.
@@ -179,7 +165,7 @@ If you don't want to see the time in a date-field, don't use the timepicker and 
 Just set the data-altFormat. 😀
 
 ```json 
-{"class":"flatpickr","data-altFormat":"j. F, Y"}
+{"class":"a11y_datetime","data-altFormat":"j. F, Y"}
 ```
 
 ## Only time picker (no calendar)
@@ -188,7 +174,7 @@ If you only want a time picker without a calendar, set `data-enableTime="true"` 
 When both are set, the default `dateFormat` and `altFormat` fall back to `H:i`.
 
 ```json
-{"class":"flatpickr","data-locale":"de","data-enableTime":"true","data-noCalendar":"true"}
+{"class":"a11y_datetime","data-locale":"de","data-enableTime":"true","data-noCalendar":"true"}
 ```
 
 ## Open on focus (optional)
@@ -197,7 +183,7 @@ By default, the picker does not open automatically when the input receives focus
 If you want the legacy behavior for a specific field, enable it explicitly:
 
 ```json
-{"class":"flatpickr","data-focusOpens":"true"}
+{"class":"a11y_datetime","data-focusOpens":"true"}
 ```
 
 ## Weekday time windows (data-timeRules)
@@ -207,7 +193,7 @@ You can pass the new `timeRules` option as JSON via `data-timeRules`.
 Example: Monday-Friday 08:00-17:00, Saturday 10:00-14:00.
 
 ```json
-{"class":"flatpickr","data-enableTime":"true","data-timeRules":"[{\"days\":[1,2,3,4,5],\"from\":\"08:00\",\"to\":\"17:00\"},{\"days\":[6],\"from\":\"10:00\",\"to\":\"14:00\"}]"}
+{"class":"a11y_datetime","data-enableTime":"true","data-timeRules":"[{\"days\":[1,2,3,4,5],\"from\":\"08:00\",\"to\":\"17:00\"},{\"days\":[6],\"from\":\"10:00\",\"to\":\"14:00\"}]"}
 ```
 
 Note: weekday indices follow JavaScript (`0`=Sunday, `1`=Monday, ..., `6`=Saturday).
@@ -220,21 +206,21 @@ In the example above, Sunday (`0`) is disabled.
 You can enable the header month/year wheel per field.
 
 ```json
-{"class":"flatpickr","data-monthYearWheel":"true","data-yearRange":"{\"past\":10,\"future\":10}","data-yearWheelManualInput":"true"}
+{"class":"a11y_datetime","data-monthYearWheel":"true","data-yearRangePast":"10","data-yearRangeFuture":"10","data-yearWheelManualInput":"true"}
 ```
 
-`data-yearRange` expects a JSON object with `past` and `future`.
+`data-yearRangePast` and `data-yearRangeFuture` are plain number attributes (no JSON needed). A `data-yearRange` JSON object (`{"past":N,"future":N}`) is still supported as a fallback, e.g. for generated code that supplies the whole range as a single attribute.
 
 You can re-enable header arrows explicitly:
 
 ```json
-{"class":"flatpickr","data-monthYearWheel":"true","data-showMonthNavArrows":"true"}
+{"class":"a11y_datetime","data-monthYearWheel":"true","data-showMonthNavArrows":"true"}
 ```
 
 Show multiple calendar pages side-by-side (useful for ranges):
 
 ```json
-{"class":"flatpickr_range","data-showMonths":"3","data-rangefield":"#id"}
+{"class":"a11y_datetime_range","data-showMonths":"3","data-rangefield":"#id"}
 ```
 
 ## Supported `data-*` attributes
@@ -257,7 +243,9 @@ These options are always applied by the addon and can be overridden by the corre
 | `data-showMonthNavArrows` | `showMonthNavArrows` | `true`/`false` | `false` |
 | `data-showMonths` | `showMonths` | Integer (`1`, `2`, `3`, ...) | `1` |
 | `data-yearWheelManualInput` | `yearWheelManualInput` | `true`/`false` | `true` |
-| `data-yearRange` | `yearRange` | JSON object `{"past":N,"future":N}` | `{"past":10,"future":10}` |
+| `data-yearRangePast` | `yearRange.past` | Integer | `10` |
+| `data-yearRangeFuture` | `yearRange.future` | Integer | `10` |
+| `data-yearRange` (fallback) | `yearRange` | JSON object `{"past":N,"future":N}` | – |
 | `data-enableTime` | `enableTime` | `true`/`false` | `false` |
 | `data-noCalendar` | `noCalendar` | `true`/`false` | `false` |
 | `data-timeRules` | `timeRules` | JSON array | `[]` |
@@ -304,7 +292,7 @@ For every other supported vendor option, add a `data-<option>` attribute and the
 | `data-disabled` | `disable` |
 | `data-enable` | `enable` |
 
-Range pickers (`.flatpickr_range` / `.a11y_datetime_range`) accept the same attributes plus `data-rangefield` (CSS selector of the second input).
+Range pickers (`.a11y_datetime_range`) accept the same attributes plus `data-rangefield` (CSS selector of the second input).
 
 Hooks (`onChange`, `onOpen`, ...) cannot be configured via `data-*` attributes.
 
@@ -316,7 +304,7 @@ The attribute ist data-disabled.
 Example: 
 
 ```json
-{"class": "flatpickr","data-locale":"de","data-enableTime":"true", "data-disabled":"2022-12-11,2022-12-24,2022-12-25"}
+{"class": "a11y_datetime","data-locale":"de","data-enableTime":"true", "data-disabled":"2022-12-11,2022-12-24,2022-12-25"}
 ```
 
 

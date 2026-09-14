@@ -2,6 +2,27 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.0.0] - 2026-09-14
+
+### BREAKING CHANGE
+- Komplette Umbenennung des Addons von `flatpickr` auf `a11y_datetime_addon`: Package-Name (`package.yml`), PHP-Namespace (`FriendsOfREDAXO\A11yDatetimeAddon`), YForm-Value-Typ-Name (`a11y_datetime_addon` statt `flatpickr`), Dateinamen (`a11y_datetime_init.js`, `value.a11y_datetime_addon.tpl.php`). Die CSS-Marker-Klasse heißt jetzt `.a11y_datetime` / `.a11y_datetime_range` (statt `.flatpickr` / `.flatpickr_range`). Grund: das Addon nutzte den Vendor-Fork `a11y_datetime` bereits seit einiger Zeit, trug aber weiterhin überall den alten Namen — inklusive eines eigenen README-Absatzes, der das erklären musste. Der Package-Name selbst wurde bewusst NICHT `a11y_datetime` (ohne Suffix), da im REDAXO-Projekt bereits ein gleichnamiges, fremdes Verzeichnis existiert (der npm/TypeScript-Quellcode des Vendor-Forks selbst) — `a11y_datetime_addon` vermeidet diesen Konflikt eindeutig.
+- Die alte CSS-Klasse `.flatpickr` wird vom Init-Script nicht mehr erkannt. Bestehende Templates/Module mit `class="flatpickr"` müssen manuell auf `class="a11y_datetime"` umgestellt werden (analog `.flatpickr_range` → `.a11y_datetime_range`).
+- Bestehende YForm-Tabellenfelder vom Typ `flatpickr` werden automatisch beim Addon-Update über eine neue `install.php`-Migration auf `a11y_datetime_addon` umgestellt (SQL-Update auf `rex_yform_field.type_name`). Keine manuelle Aktion in YForm selbst nötig.
+- Der PHP-Namespace `FriendsOfREDAXO\Flatpickr` entfällt ersatzlos; Code, der `FrontendHelper` direkt importiert, muss auf `FriendsOfREDAXO\A11yDatetimeAddon\FrontendHelper` umgestellt werden.
+- Die beiden `data-*`-Attribute `data-flatpickr-disable-callback` und `data-flatpickr-expert-json` heißen jetzt `data-a11y-datetime-disable-callback` und `data-a11y-datetime-expert-json`.
+
+### Added
+- Dünner Kompatibilitäts-Shim `rex_yform_value_flatpickr` (erbt von `rex_yform_value_a11y_datetime_addon`) für Alt-Installationen, deren YForm-Felder die automatische DB-Migration noch nicht durchlaufen haben. Als deprecated markiert, wird in einer künftigen Version entfernt.
+
+### Changed
+- `boot.php` und `FrontendHelper.php` teilen sich jetzt eine gemeinsame Asset-Liste (`FrontendHelper::assetList()`), keine doppelte Pfadpflege mehr zwischen Backend- und Frontend-Assets.
+- Init-Script vereinfacht: keine doppelte CSS-Klassen-Erkennung mehr (nur noch `.a11y_datetime` / `.a11y_datetime_range`), keine tote Vendor-Fallback-Prüfung auf `window.flatpickr` mehr (das geladene Bundle setzt ohnehin immer beide globalen Symbole).
+- YForm-Manager-Formular: Feld "Jahresbereich als JSON" (rohes `{"past":10,"future":10}`-Texteingabefeld) ersetzt durch zwei einfache Zahlenfelder "Jahre zurück" / "Jahre voraus". Kein JSON-Tippen mehr im Manager nötig.
+- Direkte HTML-/Modul-Nutzung: `data-yearRange` als JSON-Objekt-Attribut ist weiterhin als Fallback unterstützt, aber `data-yearRangePast` / `data-yearRangeFuture` als einfache Zahlen-Attribute sind jetzt der empfohlene Weg — auch für Entwickler, die ein Input-Feld direkt im Modul/Template schreiben, ohne JSON tippen zu müssen. `data-timeRules` und das Expert-JSON-Attribut bleiben bewusst JSON (komplexe bzw. generische Struktur, kein sinnvolles flaches Äquivalent).
+
+### Removed
+- Rückwärtskompatibilitäts-Erklärungsabsatz ("Warum das Addon weiterhin flatpickr heißt") aus README entfernt.
+
 ## [2.2.12] - 2026-09-14
 
 ### Fixed

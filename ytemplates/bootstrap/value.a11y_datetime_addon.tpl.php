@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @var rex_yform_value_flatpickr $this
- * @psalm-scope-this rex_yform_value_flatpickr
+ * @var rex_yform_value_a11y_datetime_addon $this
+ * @psalm-scope-this rex_yform_value_a11y_datetime_addon
  */
 
 $inputAttributes ??= [];
@@ -22,22 +22,22 @@ if (isset($this->params['warning_messages'][$this->getId()]) && !$this->params['
 if (rex::isBackend()) {
     $summaryBits = [];
     if ('' !== (string) ($configSummary['type'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_type', rex_escape((string) $configSummary['type']));
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_type', rex_escape((string) $configSummary['type']));
     }
     if ('' !== (string) ($configSummary['minuteIncrement'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_minute_increment', rex_escape((string) $configSummary['minuteIncrement']));
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_minute_increment', rex_escape((string) $configSummary['minuteIncrement']));
     }
     if ('' !== (string) ($configSummary['locale'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_locale', rex_escape((string) $configSummary['locale']));
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_locale', rex_escape((string) $configSummary['locale']));
     }
     if ('' !== (string) ($configSummary['calendarTitle'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_calendar_title', rex_escape((string) $configSummary['calendarTitle']));
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_calendar_title', rex_escape((string) $configSummary['calendarTitle']));
     }
     if ('' !== (string) ($configSummary['disableCallback'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_disable_callback', rex_escape((string) $configSummary['disableCallback']));
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_disable_callback', rex_escape((string) $configSummary['disableCallback']));
     }
     if ('' !== (string) ($configSummary['expertJson'] ?? '')) {
-        $summaryBits[] = rex_i18n::msg('flatpickr_yform_summary_expert_json');
+        $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_expert_json');
     }
 
     if ([] !== $summaryBits) {

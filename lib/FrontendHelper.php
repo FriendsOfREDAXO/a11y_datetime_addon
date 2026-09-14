@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FriendsOfREDAXO\Flatpickr;
+namespace FriendsOfREDAXO\A11yDatetimeAddon;
 
 use rex_addon;
 use rex_path;
@@ -11,29 +11,48 @@ final class FrontendHelper
 {
     private static bool $assetsIncluded = false;
 
-    public static function getAssetsHtml(string $locale = 'de', bool $includeDarkTheme = true, bool $includeRangePlugin = true, bool $includeInitScript = true): string
+    /**
+     * Reine Pfad-/Typ-Liste der benötigten Vendor-Assets, ohne HTML-Erzeugung.
+     * Wird sowohl von getAssetsHtml() (Frontend) als auch von boot.php (Backend)
+     * konsumiert, damit die Asset-Liste nur an einer Stelle gepflegt werden muss.
+     *
+     * @return list<array{type: 'css'|'js', path: string}>
+     */
+    public static function assetList(string $locale = 'de', bool $includeDarkTheme = true, bool $includeRangePlugin = true, bool $includeInitScript = true): array
     {
-        $addon = rex_addon::get('flatpickr');
-
-        $tags = [];
-        $tags[] = self::cssTag(self::assetUrl($addon, 'vendor/a11y_datetime/dist/a11y_datetime.min.css'));
+        $assets = [];
+        $assets[] = ['type' => 'css', 'path' => 'vendor/a11y_datetime/dist/a11y_datetime.min.css'];
 
         if ($includeDarkTheme) {
-            $tags[] = self::cssTag(self::assetUrl($addon, 'vendor/a11y_datetime/dist/themes/dark.css'));
+            $assets[] = ['type' => 'css', 'path' => 'vendor/a11y_datetime/dist/themes/dark.css'];
         }
 
-        $tags[] = self::jsTag(self::assetUrl($addon, 'vendor/a11y_datetime/dist/a11y_datetime.min.js'));
+        $assets[] = ['type' => 'js', 'path' => 'vendor/a11y_datetime/dist/a11y_datetime.min.js'];
 
         if ('' !== $locale) {
-            $tags[] = self::jsTag(self::assetUrl($addon, 'vendor/a11y_datetime/dist/l10n/' . $locale . '.js'));
+            $assets[] = ['type' => 'js', 'path' => 'vendor/a11y_datetime/dist/l10n/' . $locale . '.js'];
         }
 
         if ($includeRangePlugin) {
-            $tags[] = self::jsTag(self::assetUrl($addon, 'vendor/a11y_datetime/dist/plugins/rangePlugin.js'));
+            $assets[] = ['type' => 'js', 'path' => 'vendor/a11y_datetime/dist/plugins/rangePlugin.js'];
         }
 
         if ($includeInitScript) {
-            $tags[] = self::jsTag(self::assetUrl($addon, 'flatpickr_init.js'));
+            $assets[] = ['type' => 'js', 'path' => 'a11y_datetime_init.js'];
+        }
+
+        return $assets;
+    }
+
+    public static function getAssetsHtml(string $locale = 'de', bool $includeDarkTheme = true, bool $includeRangePlugin = true, bool $includeInitScript = true): string
+    {
+        $addon = rex_addon::get('a11y_datetime_addon');
+
+        $tags = [];
+        foreach (self::assetList($locale, $includeDarkTheme, $includeRangePlugin, $includeInitScript) as $asset) {
+            $tags[] = 'css' === $asset['type']
+                ? self::cssTag(self::assetUrl($addon, $asset['path']))
+                : self::jsTag(self::assetUrl($addon, $asset['path']));
         }
 
         return implode(PHP_EOL, $tags) . PHP_EOL;
@@ -52,7 +71,7 @@ final class FrontendHelper
     private static function assetUrl(rex_addon $addon, string $relativeAssetPath): string
     {
         $url = $addon->getAssetsUrl($relativeAssetPath);
-        $path = rex_path::addonAssets('flatpickr', $relativeAssetPath);
+        $path = rex_path::addonAssets('a11y_datetime_addon', $relativeAssetPath);
         $version = is_file($path) ? (string) filemtime($path) : (string) $addon->getVersion();
 
         return $url . '?v=' . rawurlencode($version);

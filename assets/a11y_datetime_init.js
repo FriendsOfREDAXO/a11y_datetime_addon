@@ -1,20 +1,15 @@
 (function () {
-    var initFlatpickr = function () {
-    if (window.__flatpickrInitRan) {
+    var initA11yDatetime = function () {
+    if (window.__a11yDatetimeInitRan) {
         return;
     }
-    window.__flatpickrInitRan = true;
+    window.__a11yDatetimeInitRan = true;
 
-    var pickerFactory = null;
-    if (typeof a11y_datetime === 'function') {
-        pickerFactory = a11y_datetime;
-    } else if (typeof flatpickr === 'function') {
-        pickerFactory = flatpickr;
-    }
-
-    if (!pickerFactory) {
+    if (typeof a11y_datetime !== 'function') {
         return;
     }
+
+    var pickerFactory = a11y_datetime;
 
     var rangePluginFactory = null;
     if (typeof rangePlugin === 'function') {
@@ -248,7 +243,7 @@
     };
 
     var applyDisableCallback = function (element, options) {
-        var callbackPath = element.getAttribute('data-flatpickr-disable-callback');
+        var callbackPath = element.getAttribute('data-a11y-datetime-disable-callback');
         if (!callbackPath) {
             return options;
         }
@@ -348,10 +343,13 @@
         var showMonthNavArrows = parseBool(element.getAttribute('data-showMonthNavArrows'), false);
         var showMonths = Math.max(1, parseInteger(element.getAttribute('data-showMonths'), 1));
         var yearWheelManualInput = parseBool(element.getAttribute('data-yearWheelManualInput'), true);
-        var yearRangeRaw = parseJsonObject(element.getAttribute('data-yearRange'), {});
+        // Bevorzugt: zwei einfache Zahlen-Attribute statt eines JSON-Objekts.
+        // data-yearRange als JSON-Objekt bleibt als Fallback unterstützt
+        // (z.B. für generierten Code, der es weiterhin als Ganzes liefert).
+        var yearRangeJson = parseJsonObject(element.getAttribute('data-yearRange'), {});
         var yearRange = {
-            past: parseInteger(yearRangeRaw.past, 10),
-            future: parseInteger(yearRangeRaw.future, 10)
+            past: parseInteger(element.getAttribute('data-yearRangePast'), parseInteger(yearRangeJson.past, 10)),
+            future: parseInteger(element.getAttribute('data-yearRangeFuture'), parseInteger(yearRangeJson.future, 10))
         };
         var defaultDateFormat = (noCalendar && enableTime) ? 'H:i' : ((enableTime) ? 'Y-m-d H:i' : 'Y-m-d');
         var defaultAltFormat = (noCalendar && enableTime) ? 'H:i' : ((enableTime) ? 'd.m.Y H:i' : 'd.m.Y');
@@ -410,7 +408,7 @@
             }
         });
 
-        var expertJson = element.getAttribute('data-flatpickr-expert-json');
+        var expertJson = element.getAttribute('data-a11y-datetime-expert-json');
         var expertOptions = parseJsonObject(expertJson, null);
         if (expertOptions) {
             mergePickerOptions(options, expertOptions);
@@ -421,22 +419,22 @@
         return options;
     };
 
-    var pickr_elements = document.querySelectorAll('.flatpickr, .a11y_datetime');
+    var pickerElements = document.querySelectorAll('.a11y_datetime');
 
-    pickr_elements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-flatpickr-initialized') === '1') {
+    pickerElements.forEach(function (element) {
+        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
             return;
         }
 
         var options = buildBaseOptions(element);
         pickerFactory(element, options);
-        element.setAttribute('data-flatpickr-initialized', '1');
+        element.setAttribute('data-a11y-datetime-initialized', '1');
     });
 
-    var pickr_elements2 = document.querySelectorAll('.flatpickr_range, .a11y_datetime_range');
+    var rangePickerElements = document.querySelectorAll('.a11y_datetime_range');
 
-    pickr_elements2.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-flatpickr-initialized') === '1') {
+    rangePickerElements.forEach(function (element) {
+        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
             return;
         }
 
@@ -448,22 +446,22 @@
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
         pickerFactory(element, options);
-        element.setAttribute('data-flatpickr-initialized', '1');
+        element.setAttribute('data-a11y-datetime-initialized', '1');
     });
 
     };
 
     if (typeof window.jQuery !== 'undefined') {
-        if (!window.jQuery(document).data('flatpickr-rex-ready-bound')) {
-            window.jQuery(document).on('rex:ready', initFlatpickr);
-            window.jQuery(document).data('flatpickr-rex-ready-bound', true);
+        if (!window.jQuery(document).data('a11y-datetime-rex-ready-bound')) {
+            window.jQuery(document).on('rex:ready', initA11yDatetime);
+            window.jQuery(document).data('a11y-datetime-rex-ready-bound', true);
         }
         return;
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFlatpickr, { once: true });
+        document.addEventListener('DOMContentLoaded', initA11yDatetime, { once: true });
     } else {
-        initFlatpickr();
+        initA11yDatetime();
     }
 })();

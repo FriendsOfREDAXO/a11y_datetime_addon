@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-class rex_yform_value_flatpickr extends rex_yform_value_abstract
+class rex_yform_value_a11y_datetime_addon extends rex_yform_value_abstract
 {
     /**
      * @var array<string, string>
      */
     private const PICKER_TYPES = [
-        'date' => 'flatpickr_yform_type_date',
-        'datetime' => 'flatpickr_yform_type_datetime',
-        'time' => 'flatpickr_yform_type_time',
-        'date_range' => 'flatpickr_yform_type_date_range',
+        'date' => 'a11y_datetime_yform_type_date',
+        'datetime' => 'a11y_datetime_yform_type_datetime',
+        'time' => 'a11y_datetime_yform_type_time',
+        'date_range' => 'a11y_datetime_yform_type_date_range',
     ];
 
     public function enterObject(): void
@@ -46,7 +46,7 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
             return;
         }
 
-        $this->params['form_output'][$this->getId()] = $this->parse('value.flatpickr.tpl.php', [
+        $this->params['form_output'][$this->getId()] = $this->parse('value.a11y_datetime_addon.tpl.php', [
             'inputAttributes' => $this->buildInputAttributes(),
             'configSummary' => $this->buildConfigSummary(),
         ]);
@@ -54,67 +54,72 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
 
     public function getDescription(): string
     {
-        return 'flatpickr|name|label|type|default|[no_db]|[notice]';
+        return 'a11y_datetime_addon|name|label|type|default|[no_db]|[notice]';
     }
 
     public function getDefinitions(): array
     {
         return [
             'type' => 'value',
-            'name' => 'flatpickr',
+            'name' => 'a11y_datetime_addon',
             'values' => [
                 'name' => ['type' => 'name', 'label' => rex_i18n::msg('yform_values_defaults_name')],
                 'label' => ['type' => 'text', 'label' => rex_i18n::msg('yform_values_defaults_label')],
                 'picker_type' => [
                     'type' => 'choice',
-                    'label' => rex_i18n::msg('flatpickr_yform_picker_type'),
+                    'label' => rex_i18n::msg('a11y_datetime_yform_picker_type'),
                     'choices' => array_map(static fn (string $key): string => rex_i18n::rawMsg($key), self::PICKER_TYPES),
                     'default' => 'date',
-                    'notice' => rex_i18n::msg('flatpickr_yform_picker_type_notice') . ' ' . rex_i18n::msg('flatpickr_yform_db_type_notice'),
+                    'notice' => rex_i18n::msg('a11y_datetime_yform_picker_type_notice') . ' ' . rex_i18n::msg('a11y_datetime_yform_db_type_notice'),
                 ],
-                'default' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_default')],
-                'current_value' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_current_value')],
-                'locale' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_locale'), 'default' => 'de'],
-                'calendar_title' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_calendar_title'), 'notice' => rex_i18n::msg('flatpickr_yform_calendar_title_notice')],
-                'alt_format' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_alt_format'), 'notice' => rex_i18n::msg('flatpickr_yform_alt_format_notice')],
-                'minute_increment' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_minute_increment'), 'default' => '1'],
+                'default' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_default')],
+                'current_value' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_current_value')],
+                'locale' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_locale'), 'default' => 'de'],
+                'calendar_title' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_calendar_title'), 'notice' => rex_i18n::msg('a11y_datetime_yform_calendar_title_notice')],
+                'alt_format' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_alt_format'), 'notice' => rex_i18n::msg('a11y_datetime_yform_alt_format_notice')],
+                'minute_increment' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_minute_increment'), 'default' => '1'],
                 'show_months' => [
                     'type' => 'text',
-                    'label' => rex_i18n::msg('flatpickr_yform_show_months'),
-                    'notice' => rex_i18n::msg('flatpickr_yform_show_months_notice'),
+                    'label' => rex_i18n::msg('a11y_datetime_yform_show_months'),
+                    'notice' => rex_i18n::msg('a11y_datetime_yform_show_months_notice'),
                 ],
                 'mobile_range_mode' => [
                     'type' => 'choice',
-                    'label' => rex_i18n::msg('flatpickr_yform_mobile_range_mode'),
+                    'label' => rex_i18n::msg('a11y_datetime_yform_mobile_range_mode'),
                     'choices' => [
-                        'default' => rex_i18n::msg('flatpickr_yform_mobile_range_mode_default'),
-                        'split' => rex_i18n::msg('flatpickr_yform_mobile_range_mode_split'),
+                        'default' => rex_i18n::msg('a11y_datetime_yform_mobile_range_mode_default'),
+                        'split' => rex_i18n::msg('a11y_datetime_yform_mobile_range_mode_split'),
                     ],
                     'default' => 'split',
-                    'notice' => rex_i18n::msg('flatpickr_yform_mobile_range_mode_notice'),
+                    'notice' => rex_i18n::msg('a11y_datetime_yform_mobile_range_mode_notice'),
                 ],
-                'year_range' => [
+                'year_range_past' => [
                     'type' => 'text',
-                    'label' => rex_i18n::msg('flatpickr_yform_year_range'),
-                    'notice' => rex_i18n::msg('flatpickr_yform_year_range_notice'),
-                    'default' => '{"past":10,"future":10}',
+                    'label' => rex_i18n::msg('a11y_datetime_yform_year_range_past'),
+                    'notice' => rex_i18n::msg('a11y_datetime_yform_year_range_notice'),
+                    'default' => '10',
                 ],
-                'enable_seconds' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_enable_seconds')],
-                'time_24hr' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_time_24hr'), 'default' => '1'],
-                'allow_input' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_allow_input')],
-                'focus_opens' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_focus_opens')],
-                'inline' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_inline')],
-                'month_year_wheel' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_month_year_wheel'), 'default' => '1'],
-                'show_month_nav_arrows' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_show_month_nav_arrows')],
-                'year_wheel_manual_input' => ['type' => 'boolean', 'label' => rex_i18n::msg('flatpickr_yform_year_wheel_manual_input'), 'default' => '1'],
-                'disable_dates' => ['type' => 'textarea', 'label' => rex_i18n::msg('flatpickr_yform_disable_dates'), 'notice' => rex_i18n::msg('flatpickr_yform_disable_dates_notice')],
-                'disable_callback' => ['type' => 'text', 'label' => rex_i18n::msg('flatpickr_yform_disable_callback'), 'notice' => rex_i18n::msg('flatpickr_yform_disable_callback_notice')],
-                'expert_json' => ['type' => 'textarea', 'label' => rex_i18n::msg('flatpickr_yform_expert_json'), 'notice' => rex_i18n::msg('flatpickr_yform_expert_json_notice')],
+                'year_range_future' => [
+                    'type' => 'text',
+                    'label' => rex_i18n::msg('a11y_datetime_yform_year_range_future'),
+                    'default' => '10',
+                ],
+                'enable_seconds' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_enable_seconds')],
+                'time_24hr' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_time_24hr'), 'default' => '1'],
+                'allow_input' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_allow_input')],
+                'focus_opens' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_focus_opens')],
+                'inline' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_inline')],
+                'month_year_wheel' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_month_year_wheel'), 'default' => '1'],
+                'show_month_nav_arrows' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_show_month_nav_arrows')],
+                'year_wheel_manual_input' => ['type' => 'boolean', 'label' => rex_i18n::msg('a11y_datetime_yform_year_wheel_manual_input'), 'default' => '1'],
+                'disable_dates' => ['type' => 'textarea', 'label' => rex_i18n::msg('a11y_datetime_yform_disable_dates'), 'notice' => rex_i18n::msg('a11y_datetime_yform_disable_dates_notice')],
+                'disable_callback' => ['type' => 'text', 'label' => rex_i18n::msg('a11y_datetime_yform_disable_callback'), 'notice' => rex_i18n::msg('a11y_datetime_yform_disable_callback_notice')],
+                'expert_json' => ['type' => 'textarea', 'label' => rex_i18n::msg('a11y_datetime_yform_expert_json'), 'notice' => rex_i18n::msg('a11y_datetime_yform_expert_json_notice')],
                 'attributes' => ['type' => 'text', 'label' => rex_i18n::msg('yform_values_defaults_attributes'), 'notice' => rex_i18n::msg('yform_values_defaults_attributes_notice')],
                 'no_db' => ['type' => 'no_db', 'label' => rex_i18n::msg('yform_values_defaults_table'), 'default' => 0],
                 'notice' => ['type' => 'text', 'label' => rex_i18n::msg('yform_values_defaults_notice')],
             ],
-            'description' => rex_i18n::msg('flatpickr_yform_description'),
+            'description' => rex_i18n::msg('a11y_datetime_yform_description'),
             'db_type' => [
                 'varchar(191)',
                 'text',
@@ -190,7 +195,7 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
         $attributes['name'] = $this->getFieldName();
         $attributes['id'] = $this->getFieldId();
         $attributes['value'] = $this->getValue();
-        $attributes['class'] = trim(((string) ($attributes['class'] ?? '')) . ' form-control flatpickr flatpickr-yform-input');
+        $attributes['class'] = trim(((string) ($attributes['class'] ?? '')) . ' form-control a11y_datetime a11y_datetime-yform-input');
         $attributes['data-locale'] = '' !== $locale ? $locale : 'de';
         $attributes['data-time_24hr'] = $this->boolAttribute('time_24hr', true);
         $attributes['data-allowInput'] = $this->boolAttribute('allow_input');
@@ -210,10 +215,8 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
         $attributes['data-minuteIncrement'] = (string) $minuteIncrement;
         $attributes['data-showMonths'] = (string) $showMonths;
 
-        $yearRange = trim((string) $this->getElement('year_range'));
-        if ('' !== $yearRange) {
-            $attributes['data-yearRange'] = $yearRange;
-        }
+        $attributes['data-yearRangePast'] = (string) max(0, (int) $this->getElement('year_range_past'));
+        $attributes['data-yearRangeFuture'] = (string) max(0, (int) $this->getElement('year_range_future'));
 
         if ('datetime' === $pickerType) {
             $attributes['data-enableTime'] = 'true';
@@ -224,8 +227,8 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
             $attributes['data-mode'] = 'range';
             $mobileRangeMode = trim((string) $this->getElement('mobile_range_mode'));
             $attributes['data-mobileRangeMode'] = '' !== $mobileRangeMode ? $mobileRangeMode : 'default';
-            $attributes['data-mobileRangeStartLabel'] = rex_i18n::msg('flatpickr_yform_mobile_range_start');
-            $attributes['data-mobileRangeEndLabel'] = rex_i18n::msg('flatpickr_yform_mobile_range_end');
+            $attributes['data-mobileRangeStartLabel'] = rex_i18n::msg('a11y_datetime_yform_mobile_range_start');
+            $attributes['data-mobileRangeEndLabel'] = rex_i18n::msg('a11y_datetime_yform_mobile_range_end');
         }
 
         $attributes['data-dateFormat'] = $dateFormat;
@@ -236,11 +239,11 @@ class rex_yform_value_flatpickr extends rex_yform_value_abstract
         }
 
         if ('' !== $disableCallback) {
-            $attributes['data-flatpickr-disable-callback'] = $disableCallback;
+            $attributes['data-a11y-datetime-disable-callback'] = $disableCallback;
         }
 
         if ('' !== $expertJson) {
-            $attributes['data-flatpickr-expert-json'] = $expertJson;
+            $attributes['data-a11y-datetime-expert-json'] = $expertJson;
         }
 
         if (!isset($attributes['placeholder']) || '' === trim((string) $attributes['placeholder'])) {
