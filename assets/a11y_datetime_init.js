@@ -414,22 +414,44 @@
         return options;
     };
 
+    // Guard attributes: this script's own marker plus markers used by sibling
+    // REDAXO addons (e.g. "flatpickr") that bundle the same vendor library and
+    // scan the same ".a11y_datetime" selector. Without recognizing the other
+    // side's marker, both init scripts can end up calling the vendor factory
+    // on the very same <input>, creating a second flatpickr instance whose
+    // altInput is what the editor sees/edits while the original, form-named
+    // input (owned by the first, "orphaned" instance) never receives the
+    // selected value - so it submits empty and the server stores a null date.
+    var isAlreadyInitialized = function (element) {
+        return !!element._flatpickr
+            || element.getAttribute('data-a11y-datetime-initialized') === '1'
+            || element.getAttribute('data-flatpickr-initialized') === '1';
+    };
+
+    var markInitialized = function (element) {
+        // Set the guard synchronously, before invoking the vendor factory,
+        // so a sibling init script running immediately afterwards (same tick)
+        // sees the marker and skips the element instead of racing us.
+        element.setAttribute('data-a11y-datetime-initialized', '1');
+        element.setAttribute('data-flatpickr-initialized', '1');
+    };
+
     var pickerElements = document.querySelectorAll('.a11y_datetime');
 
     pickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
+        if (isAlreadyInitialized(element)) {
             return;
         }
 
+        markInitialized(element);
         var options = buildBaseOptions(element);
         pickerFactory(element, options);
-        element.setAttribute('data-a11y-datetime-initialized', '1');
     });
 
     var rangePickerElements = document.querySelectorAll('.a11y_datetime_range');
 
     rangePickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
+        if (isAlreadyInitialized(element)) {
             return;
         }
 
@@ -438,10 +460,10 @@
             return;
         }
 
+        markInitialized(element);
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
         pickerFactory(element, options);
-        element.setAttribute('data-a11y-datetime-initialized', '1');
     });
 
     };

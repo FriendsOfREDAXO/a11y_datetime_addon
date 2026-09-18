@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.1.1] - 2026-09-18
+
+### Fixed
+- **Kritischer Datenverlust bei `picker_type: datetime`** (und potenziell allen anderen Picker-Typen): War auf derselben REDAXO-Installation zusätzlich noch das alte, vor der Umbenennung in v3.0.0 installierte `flatpickr`-Addon aktiv, luden dessen `boot.php` und dieses Addons `boot.php` beide unabhängig voneinander ihre jeweilige Kopie der Vendor-Bibliothek plus ein eigenes Init-Script (`flatpickr_init.js` bzw. `a11y_datetime_init.js`). Beide Scripts scannen `document.querySelectorAll('.a11y_datetime')` und initialisieren jedes gefundene Element — jedoch mit jeweils eigenem, nicht gegenseitig erkanntem Guard-Attribut (`data-flatpickr-initialized` vs. `data-a11y-datetime-initialized`). Ergebnis: Der Picker wurde zweimal auf demselben `<input>` initialisiert. Die zweite Instanz erzeugte ein eigenes verstecktes/sichtbares Input-Paar, das der Redakteur tatsächlich bedient — während das ORIGINALE, für den Formular-Submit benannte `<input name="FORM[...]">` bei der ersten (jetzt verwaisten) Instanz verblieb und nie ein `selectedDates`-Update bekam. Beim Absenden wurde daher ein leerer String übertragen, den PHP zu einem ungültigen Datum wie `-0001-11-30 00:00` verarbeitete — der ausgewählte Termin ging vollständig verloren. Fix in `assets/a11y_datetime_init.js`: Das Guard-Attribut wird jetzt synchron VOR dem Aufruf der Vendor-Factory gesetzt (statt danach) und zusätzlich wird beim Prüfen UND Setzen auch das vom `flatpickr`-Addon verwendete `data-flatpickr-initialized`-Attribut berücksichtigt, sodass sich beide Init-Scripts gegenseitig zuverlässig erkennen und kein Element doppelt initialisiert wird — unabhängig von der Ladereihenfolge der beiden Addons.
+- **Platzhalter in der Backend-Konfigurationszusammenfassung** (`value.a11y_datetime_addon.tpl.php`, Texte wie „Typ: %s“, „Minuten: %s“, „Locale: %s“): Die Lang-Dateien nutzten das alte `sprintf`-Format `%s`, REDAXOs `rex_i18n::msg()` ersetzt aber ausschließlich positionelle Platzhalter im Format `{0}`, `{1}`, … . Dadurch blieb `%s` im Backend-Hilfetext unter dem Datums-/Zeitfeld immer wortwörtlich stehen, ohne dass der eigentliche Wert (Feldtyp, Minuten-Schrittweite, Locale, …) je sichtbar wurde. Fix: alle betroffenen Keys in `lang/de_de.lang` und `lang/en_gb.lang` (`a11y_datetime_yform_summary_*`) von `%s` auf `{0}` umgestellt.
+
 ## [3.1.0] - 2026-09-14
 
 ### Added
