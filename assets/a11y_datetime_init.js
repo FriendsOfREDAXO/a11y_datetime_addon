@@ -354,6 +354,28 @@
         var disableList = parseCommaList(element.getAttribute('data-disabled'));
         var enableList = parseCommaList(element.getAttribute('data-enable'));
 
+        // The vendor library defaults altInputClass to the ORIGINAL element's
+        // full className (see a11y_datetime.js setupInputs()/init()), which
+        // means the newly created, visible altInput ends up carrying the very
+        // ".a11y_datetime"/".a11y_datetime_range" trigger class it was cloned
+        // from - unless we override it here. Left unfixed, that clone looks
+        // like a brand-new, uninitialized picker field to any later selector
+        // scan (this script re-running, or a sibling addon's init script such
+        // as the legacy "flatpickr" addon's flatpickr_init.js), which then
+        // initializes a SECOND flatpickr instance on top of it. That second
+        // instance is what the editor actually sees/uses, while the first
+        // instance's original, form-named <input> silently keeps an empty,
+        // never-updated value - the cause of the picked date/time being lost
+        // on submit. Stripping the trigger classes from the altInput closes
+        // this loophole; a data-altInputClass attribute still wins if set.
+        var defaultAltInputClass = element.className
+            .split(/\s+/)
+            .filter(function (cls) {
+                return cls !== '' && cls !== 'a11y_datetime' && cls !== 'a11y_datetime_range';
+            })
+            .concat(['a11y_datetime-alt-input'])
+            .join(' ');
+
         var options = {
             enableTime: enableTime,
             noCalendar: noCalendar,
@@ -365,6 +387,7 @@
             yearRange: yearRange,
             dateFormat: dateFormat,
             altInput: true,
+            altInputClass: defaultAltInputClass,
             altFormat: altFormat,
             time_24hr: true,
             timeRules: timeRules,
