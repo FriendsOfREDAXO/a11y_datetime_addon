@@ -414,22 +414,37 @@
         return options;
     };
 
+    // flatpickr legt bei altInput ein sichtbares Ersatzfeld an, das alle Klassen des Originals erbt -
+    // auch .a11y_datetime. Beim naechsten rex:ready (PJAX, MBlock, MForm-Repeater, nachgeladenes HTML)
+    // wuerde dieses Ersatzfeld sonst selbst als Picker initialisiert: Es zeigt dann ein falsches Datum
+    // (der formatierte Anzeigetext wird als Wert geparst) und eine leere Uhrzeit.
+    var isAltInputOfExistingPicker = function (element) {
+        var original = element.previousElementSibling;
+        return !!(original && original._flatpickr && original._flatpickr.altInput === element);
+    };
+
+    var markInitialized = function (element, instance) {
+        element.setAttribute('data-a11y-datetime-initialized', '1');
+        if (instance && instance.altInput) {
+            instance.altInput.setAttribute('data-a11y-datetime-initialized', '1');
+        }
+    };
+
     var pickerElements = document.querySelectorAll('.a11y_datetime');
 
     pickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
+        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1' || isAltInputOfExistingPicker(element)) {
             return;
         }
 
         var options = buildBaseOptions(element);
-        pickerFactory(element, options);
-        element.setAttribute('data-a11y-datetime-initialized', '1');
+        markInitialized(element, pickerFactory(element, options));
     });
 
     var rangePickerElements = document.querySelectorAll('.a11y_datetime_range');
 
     rangePickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1') {
+        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1' || isAltInputOfExistingPicker(element)) {
             return;
         }
 
@@ -440,8 +455,7 @@
 
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
-        pickerFactory(element, options);
-        element.setAttribute('data-a11y-datetime-initialized', '1');
+        markInitialized(element, pickerFactory(element, options));
     });
 
     };
