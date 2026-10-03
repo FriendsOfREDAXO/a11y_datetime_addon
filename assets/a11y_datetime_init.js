@@ -437,6 +437,15 @@
         return options;
     };
 
+    // flatpickr legt bei altInput ein sichtbares Ersatzfeld an, das alle Klassen des Originals erbt -
+    // auch .a11y_datetime. Beim naechsten rex:ready (PJAX, MBlock, MForm-Repeater, nachgeladenes HTML)
+    // wuerde dieses Ersatzfeld sonst selbst als Picker initialisiert: Es zeigt dann ein falsches Datum
+    // (der formatierte Anzeigetext wird als Wert geparst) und eine leere Uhrzeit.
+    var isAltInputOfExistingPicker = function (element) {
+        var original = element.previousElementSibling;
+        return !!(original && original._flatpickr && original._flatpickr.altInput === element);
+    };
+
     // Guard attributes: this script's own marker plus markers used by sibling
     // REDAXO addons (e.g. "flatpickr") that bundle the same vendor library and
     // scan the same ".a11y_datetime" selector. Without recognizing the other
@@ -448,15 +457,21 @@
     var isAlreadyInitialized = function (element) {
         return !!element._flatpickr
             || element.getAttribute('data-a11y-datetime-initialized') === '1'
-            || element.getAttribute('data-flatpickr-initialized') === '1';
+            || element.getAttribute('data-flatpickr-initialized') === '1'
+            || isAltInputOfExistingPicker(element);
     };
 
-    var markInitialized = function (element) {
+    var markInitialized = function (element, instance) {
         // Set the guard synchronously, before invoking the vendor factory,
         // so a sibling init script running immediately afterwards (same tick)
         // sees the marker and skips the element instead of racing us.
         element.setAttribute('data-a11y-datetime-initialized', '1');
         element.setAttribute('data-flatpickr-initialized', '1');
+        // Das sichtbare Ersatzfeld (altInput) direkt nach dem Anlegen ebenfalls markieren.
+        if (instance && instance.altInput) {
+            instance.altInput.setAttribute('data-a11y-datetime-initialized', '1');
+            instance.altInput.setAttribute('data-flatpickr-initialized', '1');
+        }
     };
 
     var pickerElements = document.querySelectorAll('.a11y_datetime');
@@ -468,7 +483,7 @@
 
         markInitialized(element);
         var options = buildBaseOptions(element);
-        pickerFactory(element, options);
+        markInitialized(element, pickerFactory(element, options));
     });
 
     var rangePickerElements = document.querySelectorAll('.a11y_datetime_range');
@@ -486,7 +501,7 @@
         markInitialized(element);
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
-        pickerFactory(element, options);
+        markInitialized(element, pickerFactory(element, options));
     });
 
     };
