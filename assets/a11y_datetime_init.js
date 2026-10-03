@@ -354,6 +354,28 @@
         var disableList = parseCommaList(element.getAttribute('data-disabled'));
         var enableList = parseCommaList(element.getAttribute('data-enable'));
 
+        // The vendor library defaults altInputClass to the ORIGINAL element's
+        // full className (see a11y_datetime.js setupInputs()/init()), which
+        // means the newly created, visible altInput ends up carrying the very
+        // ".a11y_datetime"/".a11y_datetime_range" trigger class it was cloned
+        // from - unless we override it here. Left unfixed, that clone looks
+        // like a brand-new, uninitialized picker field to any later selector
+        // scan (this script re-running, or a sibling addon's init script such
+        // as the legacy "flatpickr" addon's flatpickr_init.js), which then
+        // initializes a SECOND flatpickr instance on top of it. That second
+        // instance is what the editor actually sees/uses, while the first
+        // instance's original, form-named <input> silently keeps an empty,
+        // never-updated value - the cause of the picked date/time being lost
+        // on submit. Stripping the trigger classes from the altInput closes
+        // this loophole; a data-altInputClass attribute still wins if set.
+        var defaultAltInputClass = element.className
+            .split(/\s+/)
+            .filter(function (cls) {
+                return cls !== '' && cls !== 'a11y_datetime' && cls !== 'a11y_datetime_range';
+            })
+            .concat(['a11y_datetime-alt-input'])
+            .join(' ');
+
         var options = {
             enableTime: enableTime,
             noCalendar: noCalendar,
@@ -365,6 +387,7 @@
             yearRange: yearRange,
             dateFormat: dateFormat,
             altInput: true,
+            altInputClass: defaultAltInputClass,
             altFormat: altFormat,
             time_24hr: true,
             timeRules: timeRules,
@@ -423,20 +446,42 @@
         return !!(original && original._flatpickr && original._flatpickr.altInput === element);
     };
 
+    // Guard attributes: this script's own marker plus markers used by sibling
+    // REDAXO addons (e.g. "flatpickr") that bundle the same vendor library and
+    // scan the same ".a11y_datetime" selector. Without recognizing the other
+    // side's marker, both init scripts can end up calling the vendor factory
+    // on the very same <input>, creating a second flatpickr instance whose
+    // altInput is what the editor sees/edits while the original, form-named
+    // input (owned by the first, "orphaned" instance) never receives the
+    // selected value - so it submits empty and the server stores a null date.
+    var isAlreadyInitialized = function (element) {
+        return !!element._flatpickr
+            || element.getAttribute('data-a11y-datetime-initialized') === '1'
+            || element.getAttribute('data-flatpickr-initialized') === '1'
+            || isAltInputOfExistingPicker(element);
+    };
+
     var markInitialized = function (element, instance) {
+        // Set the guard synchronously, before invoking the vendor factory,
+        // so a sibling init script running immediately afterwards (same tick)
+        // sees the marker and skips the element instead of racing us.
         element.setAttribute('data-a11y-datetime-initialized', '1');
+        element.setAttribute('data-flatpickr-initialized', '1');
+        // Das sichtbare Ersatzfeld (altInput) direkt nach dem Anlegen ebenfalls markieren.
         if (instance && instance.altInput) {
             instance.altInput.setAttribute('data-a11y-datetime-initialized', '1');
+            instance.altInput.setAttribute('data-flatpickr-initialized', '1');
         }
     };
 
     var pickerElements = document.querySelectorAll('.a11y_datetime');
 
     pickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1' || isAltInputOfExistingPicker(element)) {
+        if (isAlreadyInitialized(element)) {
             return;
         }
 
+        markInitialized(element);
         var options = buildBaseOptions(element);
         markInitialized(element, pickerFactory(element, options));
     });
@@ -444,7 +489,7 @@
     var rangePickerElements = document.querySelectorAll('.a11y_datetime_range');
 
     rangePickerElements.forEach(function (element) {
-        if (element._flatpickr || element.getAttribute('data-a11y-datetime-initialized') === '1' || isAltInputOfExistingPicker(element)) {
+        if (isAlreadyInitialized(element)) {
             return;
         }
 
@@ -453,6 +498,7 @@
             return;
         }
 
+        markInitialized(element);
         var options = buildBaseOptions(element);
         options.plugins = [new rangePluginFactory({ input: rangeField })];
         markInitialized(element, pickerFactory(element, options));
