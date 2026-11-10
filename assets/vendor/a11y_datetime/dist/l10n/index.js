@@ -780,6 +780,11 @@ var l10n_index = (() => {
     rangeSeparator: " bis ",
     scrollTitle: "Zum \xC4ndern scrollen",
     toggleTitle: "Zum Umschalten klicken",
+    calendarTitle: "Kalender",
+    yearAriaLabel: "Jahr",
+    monthAriaLabel: "Monat",
+    hourAriaLabel: "Stunde",
+    minuteAriaLabel: "Minute",
     timeLabel: "Zeit",
     timePickerAriaLabel: "Zeitauswahl",
     doneButtonLabel: "Fertig",
@@ -869,6 +874,7 @@ var l10n_index = (() => {
     hourAriaLabel: "Hour",
     minuteAriaLabel: "Minute",
     secondAriaLabel: "Second",
+    calendarTitle: "Calendar",
     timeLabel: "Time",
     timePickerAriaLabel: "Time picker popover",
     doneButtonLabel: "Done",
@@ -996,6 +1002,7 @@ var l10n_index = (() => {
       return "\xBA";
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     rangeSeparator: " a ",
     keyboardHelpAriaLabel: "Ayuda de teclado",
     keyboardShortcutsTitle: "Atajos de teclado",
@@ -1248,6 +1255,7 @@ var l10n_index = (() => {
   };
   var French = {
     firstDayOfWeek: 1,
+    calendarTitle: "Calendrier",
     weekdays: {
       shorthand: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
       longhand: [
@@ -1805,6 +1813,7 @@ var l10n_index = (() => {
       ]
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     ordinal: () => "\xB0",
     rangeSeparator: " al ",
     weekAbbreviation: "Se",
@@ -2495,6 +2504,7 @@ var l10n_index = (() => {
       ]
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Kalender",
     weekAbbreviation: "wk",
     rangeSeparator: " t/m ",
     scrollTitle: "Scroll voor volgende / vorige",

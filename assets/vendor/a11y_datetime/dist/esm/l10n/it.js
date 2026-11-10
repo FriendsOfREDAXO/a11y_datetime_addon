@@ -47,6 +47,7 @@ export var Italian = {
         ],
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     ordinal: function () { return "°"; },
     rangeSeparator: " al ",
     weekAbbreviation: "Se",

@@ -21,14 +21,15 @@ export var defaults = {
     altInputClass: "form-control input",
     animate: typeof window === "object" &&
         window.navigator.userAgent.indexOf("MSIE") === -1 &&
-        !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches),
+        !(window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches),
     announceChanges: true,
     ariaDateFormat: "F j, Y",
     autoFillDefaultTime: true,
     focusOpens: false,
     clickOpens: true,
     closeOnSelect: true,
-    calendarTitle: "Calendar",
+    calendarTitle: "",
     showTitleBar: true,
     showCloseButton: true,
     conjunction: ", ",

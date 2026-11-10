@@ -93,6 +93,7 @@ var l10n_default = (() => {
     hourAriaLabel: "Hour",
     minuteAriaLabel: "Minute",
     secondAriaLabel: "Second",
+    calendarTitle: "Calendar",
     timeLabel: "Time",
     timePickerAriaLabel: "Time picker popover",
     doneButtonLabel: "Done",
