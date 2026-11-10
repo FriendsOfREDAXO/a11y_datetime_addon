@@ -1,4 +1,4 @@
-/* a11y_datetime v5.3.0, based on flatpickr, @license MIT */
+/* a11y_datetime v5.3.2, based on flatpickr, @license MIT */
 "use strict";
 var __a11y_datetime_bundle = (() => {
   var __defProp = Object.defineProperty;
@@ -1427,9 +1427,9 @@ var __a11y_datetime_bundle = (() => {
       }
       if (!self.config.inline && !self.config.static)
         bind(window, "resize", debouncedResize);
+      bind(window.document, "mousedown", documentClick);
       if (window.ontouchstart !== void 0)
         bind(window.document, "touchstart", documentClick);
-      else bind(window.document, "mousedown", documentClick);
       bind(window.document, "focus", documentClick, { capture: true });
       if (self.config.clickOpens === true) {
         if (self.config.focusOpens === true) {
@@ -2757,9 +2757,12 @@ var __a11y_datetime_bundle = (() => {
               self.config.altInput ? self.config.altFormat : self.config.dateFormat
             );
           }
-          if (self.timeContainer !== void 0 && self.minuteElement !== void 0 && self.hourElement !== void 0 && self.input.value !== "" && self.input.value !== void 0 && self.config && self.config.mode === "range" && self.selectedDates.length === 1)
-            self.clear(false);
+          if (self.timeContainer !== void 0 && self.minuteElement !== void 0 && self.hourElement !== void 0 && self.input.value !== "" && self.input.value !== void 0) {
+            updateTime();
+          }
           self.close();
+          if (self.config && self.config.mode === "range" && self.selectedDates.length === 1)
+            self.clear(false);
         }
       }
     }
@@ -3026,7 +3029,14 @@ var __a11y_datetime_bundle = (() => {
               const isDayInGrid = !self.config.noCalendar && !!self.daysContainer && self.daysContainer.contains(eventTarget);
               const prevMonthEnabled = !self.config.noCalendar && self.config.showMonthNavArrows && self.prevMonthNav && !self.prevMonthNav.classList.contains("flatpickr-disabled") ? self.prevMonthNav : void 0;
               const nextMonthEnabled = !self.config.noCalendar && self.config.showMonthNavArrows && self.nextMonthNav && !self.nextMonthNav.classList.contains("flatpickr-disabled") ? self.nextMonthNav : void 0;
-              const headerPrimary = !self.config.noCalendar ? self.config.monthYearWheel ? monthYearWheelTrigger : self.monthsDropdownContainer || self.currentYearElement || prevMonthEnabled : void 0;
+              const headerPrimary = !self.config.noCalendar ? self.config.monthYearWheel ? monthYearWheelTrigger : (
+                // plugins (e.g. monthSelect) may detach the month dropdown
+                [
+                  self.monthsDropdownContainer,
+                  self.currentYearElement,
+                  prevMonthEnabled
+                ].find((el) => el !== void 0 && el.isConnected)
+              ) : void 0;
               const tabOrder = [
                 prevMonthEnabled,
                 headerPrimary,
@@ -3721,7 +3731,6 @@ var __a11y_datetime_bundle = (() => {
         "input",
         self.input.className + " flatpickr-mobile"
       );
-      self.mobileInput.tabIndex = 1;
       self.mobileInput.type = inputType;
       self.mobileInput.disabled = self.input.disabled;
       self.mobileInput.required = self.input.required;
@@ -3739,6 +3748,7 @@ var __a11y_datetime_bundle = (() => {
         self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
       if (self.input.getAttribute("step"))
         self.mobileInput.step = String(self.input.getAttribute("step"));
+      linkMobileInputLabel(self.mobileInput);
       self.input.type = "hidden";
       if (self.altInput !== void 0) self.altInput.type = "hidden";
       try {
@@ -3757,6 +3767,38 @@ var __a11y_datetime_bundle = (() => {
         );
         triggerEvent("onChange");
         triggerEvent("onClose");
+      });
+    }
+    function linkMobileInputLabel(mobileInput) {
+      const original = self.input;
+      const labels = [];
+      if (original.id && typeof document !== "undefined") {
+        const escaped = typeof CSS !== "undefined" && CSS.escape ? CSS.escape(original.id) : original.id.replace(/"/g, '\\"');
+        document.querySelectorAll(`label[for="${escaped}"]`).forEach((label) => labels.push(label));
+      }
+      const wrapping = original.closest("label");
+      if (wrapping && labels.indexOf(wrapping) === -1) labels.push(wrapping);
+      const labelledBy = original.getAttribute("aria-labelledby");
+      if (labelledBy) {
+        mobileInput.setAttribute("aria-labelledby", labelledBy);
+      } else if (labels.length > 0) {
+        mobileInput.setAttribute(
+          "aria-labelledby",
+          labels.map((label, i) => {
+            if (!label.id) label.id = `${calendarInstanceId}-label${i || ""}`;
+            return label.id;
+          }).join(" ")
+        );
+      }
+      [
+        "aria-label",
+        "aria-describedby",
+        "aria-invalid",
+        "aria-required",
+        "autocomplete"
+      ].forEach((name) => {
+        const value = original.getAttribute(name);
+        if (value !== null) mobileInput.setAttribute(name, value);
       });
     }
     function toggle(e) {
