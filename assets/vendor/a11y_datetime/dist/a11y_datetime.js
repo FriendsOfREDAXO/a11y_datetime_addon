@@ -1,4 +1,4 @@
-/* a11y_datetime v5.2.8, based on flatpickr, @license MIT */
+/* a11y_datetime v5.3.0, based on flatpickr, @license MIT */
 "use strict";
 var __a11y_datetime_bundle = (() => {
   var __defProp = Object.defineProperty;
@@ -54,7 +54,7 @@ var __a11y_datetime_bundle = (() => {
     focusOpens: false,
     clickOpens: true,
     closeOnSelect: true,
-    calendarTitle: "Calendar",
+    calendarTitle: "",
     showTitleBar: true,
     showCloseButton: true,
     conjunction: ", ",
@@ -186,6 +186,7 @@ var __a11y_datetime_bundle = (() => {
     hourAriaLabel: "Hour",
     minuteAriaLabel: "Minute",
     secondAriaLabel: "Second",
+    calendarTitle: "Calendar",
     timeLabel: "Time",
     timePickerAriaLabel: "Time picker popover",
     doneButtonLabel: "Done",
@@ -624,6 +625,9 @@ var __a11y_datetime_bundle = (() => {
         }
       }, 10);
     }
+    function calendarTitle() {
+      return self.config.calendarTitle || self.l10n && self.l10n.calendarTitle || "Calendar";
+    }
     function setupHelperFunctions() {
       self.utils = {
         getDaysInMonth(month = self.currentMonth, yr = self.currentYear) {
@@ -666,7 +670,8 @@ var __a11y_datetime_bundle = (() => {
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
       if (maxShowMonths <= 1) return 1;
       if (viewportWidth > 0 && viewportWidth < 640) return 1;
-      if (viewportWidth > 0 && viewportWidth < 960) return Math.min(maxShowMonths, 2);
+      if (viewportWidth > 0 && viewportWidth < 960)
+        return Math.min(maxShowMonths, 2);
       return maxShowMonths;
     }
     function syncResponsiveShowMonths() {
@@ -705,7 +710,9 @@ var __a11y_datetime_bundle = (() => {
         const monthWidth = firstDayContainer ? Math.round(firstDayContainer.getBoundingClientRect().width) : 0;
         const monthElements = self.monthNav ? Array.from(self.monthNav.querySelectorAll(".flatpickr-month")) : [];
         const weekdayGroups = self.weekdayContainer ? Array.from(
-          self.weekdayContainer.querySelectorAll(".flatpickr-weekdaycontainer")
+          self.weekdayContainer.querySelectorAll(
+            ".flatpickr-weekdaycontainer"
+          )
         ) : [];
         monthElements.forEach((monthEl, index) => {
           monthEl.style.display = index < monthCount ? "" : "none";
@@ -1074,7 +1081,9 @@ var __a11y_datetime_bundle = (() => {
       }
       updateTimeWheelDisabledOptions();
       if (timeWheelTrigger) {
-        let label = `${pad(self.hourElement.value)}:${pad(self.minuteElement.value)}`;
+        let label = `${pad(self.hourElement.value)}:${pad(
+          self.minuteElement.value
+        )}`;
         if (self.secondElement !== void 0) {
           label += `:${pad(self.secondElement.value)}`;
         }
@@ -1514,10 +1523,7 @@ var __a11y_datetime_bundle = (() => {
       self.calendarContainer.setAttribute("role", "dialog");
       self.calendarContainer.setAttribute("aria-modal", "false");
       self.calendarContainer.setAttribute("aria-hidden", "true");
-      self.calendarContainer.setAttribute(
-        "aria-label",
-        self.config.calendarTitle || "Calendar"
-      );
+      self.calendarContainer.setAttribute("aria-label", calendarTitle());
       self._input.setAttribute("aria-haspopup", "dialog");
       self._input.setAttribute("aria-controls", self.calendarContainer.id);
       self._input.setAttribute("aria-expanded", "false");
@@ -1566,12 +1572,15 @@ var __a11y_datetime_bundle = (() => {
           self.closeButton = void 0;
         }
         if (self.config.showTitleBar || self.config.showCloseButton) {
-          const titleBar = createElement("div", "flatpickr-titlebar");
+          const titleBar = createElement(
+            "div",
+            "flatpickr-titlebar"
+          );
           if (self.config.showTitleBar) {
             const titleText = createElement(
               "span",
               "flatpickr-title",
-              self.config.calendarTitle
+              calendarTitle()
             );
             titleBar.appendChild(titleText);
           }
@@ -1963,7 +1972,10 @@ var __a11y_datetime_bundle = (() => {
       );
       popover.setAttribute("role", "dialog");
       popover.setAttribute("aria-modal", "false");
-      popover.setAttribute("aria-label", `${self.l10n.monthAriaLabel} / ${self.l10n.yearAriaLabel}`);
+      popover.setAttribute(
+        "aria-label",
+        `${self.l10n.monthAriaLabel} / ${self.l10n.yearAriaLabel}`
+      );
       popover.setAttribute("hidden", "hidden");
       const content = createElement(
         "div",
@@ -2072,7 +2084,10 @@ var __a11y_datetime_bundle = (() => {
           "flatpickr-month-year-wheel-input"
         );
         monthYearWheelManualInput.type = "number";
-        monthYearWheelManualInput.setAttribute("aria-label", self.l10n.yearAriaLabel);
+        monthYearWheelManualInput.setAttribute(
+          "aria-label",
+          self.l10n.yearAriaLabel
+        );
         monthYearWheelManualInput.step = "1";
         monthYearWheelManualInput.min = String(minYear);
         monthYearWheelManualInput.max = String(maxYear);
@@ -2086,7 +2101,11 @@ var __a11y_datetime_bundle = (() => {
         bind(monthYearWheelManualInput, "keydown", (event) => {
           if (event.key === "Tab" || event.keyCode === 9) {
             event.preventDefault();
-            cyclePopoverFocus(popover, monthYearWheelManualInput, event.shiftKey);
+            cyclePopoverFocus(
+              popover,
+              monthYearWheelManualInput,
+              event.shiftKey
+            );
             return;
           }
           if (event.key === "Enter") {
@@ -2493,7 +2512,9 @@ var __a11y_datetime_bundle = (() => {
         );
         bind(timeWheelTrigger, "click", () => {
           if (!timeWheelPopover) return;
-          setTimeWheelPopoverOpen(!timeWheelPopover.classList.contains("is-open"));
+          setTimeWheelPopoverOpen(
+            !timeWheelPopover.classList.contains("is-open")
+          );
         });
         timeBar.appendChild(timeLabel);
         timeBar.appendChild(timeWheelTrigger);
@@ -3025,7 +3046,9 @@ var __a11y_datetime_bundle = (() => {
                 const isDisabled = el.disabled === true || el.classList.contains("flatpickr-disabled");
                 const isHidden = el.closest("[hidden]") !== null;
                 const isConnected = el.isConnected;
-                const isProgrammaticDayTarget = el.classList.contains("flatpickr-day");
+                const isProgrammaticDayTarget = el.classList.contains(
+                  "flatpickr-day"
+                );
                 return isConnected && !isDisabled && !isHidden && (el.tabIndex >= 0 || isProgrammaticDayTarget);
               }).filter((el, index, arr) => arr.indexOf(el) === index);
               if (isInput && tabOrder.length > 0) {
@@ -3310,7 +3333,10 @@ var __a11y_datetime_bundle = (() => {
         const range = userConfig.yearRange;
         self.config.yearRange = {
           past: Math.max(0, Number(range.past || self.config.yearRange.past)),
-          future: Math.max(0, Number(range.future || self.config.yearRange.future))
+          future: Math.max(
+            0,
+            Number(range.future || self.config.yearRange.future)
+          )
         };
       }
       if (self.config.enableTime) {

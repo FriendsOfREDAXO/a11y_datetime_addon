@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.2.0] - 2026-11-10
+
+### Changed
+- Vendor-Update auf [a11y_datetime v5.3.0](https://github.com/FriendsOfREDAXO/a11y_datetime/releases/tag/v5.3.0): Der Kalender-Titel (Titelzeile und `aria-label` des Kalenders) kommt jetzt aus der Sprachdatei. Bisher stand dort immer das englische „Calendar“, auch auf deutschen Seiten. Neu übersetzt: Deutsch „Kalender“, dazu Niederländisch, Französisch, Italienisch und Spanisch. Ein gesetztes `data-calendarTitle` bzw. der „Kalender-Titel“ im YForm-Feld hat weiterhin Vorrang.
+- Deutsche Sprachdatei: fehlende Screenreader-Bezeichnungen für Jahr, Monat, Stunde und Minute ergänzt (vorher englisch „Year“, „Month“, „Hour“, „Minute“).
+- Hilfetext zum Kalender-Titel im YForm-Feld angepasst.
+
 ## [3.1.1] - 2026-10-03
 
 ### Fixed

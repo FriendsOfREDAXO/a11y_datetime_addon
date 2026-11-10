@@ -29,6 +29,7 @@ var l10n_fr = (() => {
   };
   var French = {
     firstDayOfWeek: 1,
+    calendarTitle: "Calendrier",
     weekdays: {
       shorthand: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
       longhand: [

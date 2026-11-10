@@ -71,6 +71,7 @@ var l10n_nl = (() => {
       ]
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Kalender",
     weekAbbreviation: "wk",
     rangeSeparator: " t/m ",
     scrollTitle: "Scroll voor volgende / vorige",

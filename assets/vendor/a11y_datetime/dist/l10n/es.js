@@ -74,6 +74,7 @@ var l10n_es = (() => {
       return "\xBA";
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     rangeSeparator: " a ",
     keyboardHelpAriaLabel: "Ayuda de teclado",
     keyboardShortcutsTitle: "Atajos de teclado",

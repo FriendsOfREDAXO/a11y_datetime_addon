@@ -71,6 +71,7 @@ var l10n_it = (() => {
       ]
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     ordinal: () => "\xB0",
     rangeSeparator: " al ",
     weekAbbreviation: "Se",

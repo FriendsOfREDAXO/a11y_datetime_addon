@@ -50,6 +50,7 @@ export var Spanish = {
         return "º";
     },
     firstDayOfWeek: 1,
+    calendarTitle: "Calendario",
     rangeSeparator: " a ",
     keyboardHelpAriaLabel: "Ayuda de teclado",
     keyboardShortcutsTitle: "Atajos de teclado",
