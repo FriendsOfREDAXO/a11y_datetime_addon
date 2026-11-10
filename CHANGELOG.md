@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.2.1] - 2026-11-10
+
+### Fixed
+- Vendor-Update auf [a11y_datetime v5.3.2](https://github.com/FriendsOfREDAXO/a11y_datetime/releases/tag/v5.3.2) (enthält [v5.3.1](https://github.com/FriendsOfREDAXO/a11y_datetime/releases/tag/v5.3.1)):
+  - **Barrierefreiheit auf Smartphones:** Das native Datums-/Zeitfeld, das auf Touch-Geräten statt des Kalenders erscheint, hatte `tabindex="1"` und keinen zugänglichen Namen (Lighthouse/axe: „Form elements do not have associated labels“, „tabindex greater than 0“). Es folgt jetzt der normalen Tab-Reihenfolge und ist über `aria-labelledby` mit dem Label des Felds verknüpft; `aria-describedby`, `aria-invalid`, `aria-required` und `autocomplete` werden übernommen. Keine sichtbare Änderung.
+  - Klick außerhalb schließt den Picker jetzt auch auf Touch-Laptops (vorher nur per Touch).
+  - Eine halb gewählte Range wird beim Schließen wieder verworfen; mit Uhrzeit wird die eingegebene Zeit vorher übernommen.
+  - `monthSelect`-Plugin: Jahresnavigation (Vor/Zurück) funktioniert wieder.
+
 ## [3.2.0] - 2026-11-10
 
 ### Changed

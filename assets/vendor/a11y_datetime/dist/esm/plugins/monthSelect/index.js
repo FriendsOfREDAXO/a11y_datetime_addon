@@ -232,6 +232,8 @@ function monthSelectPlugin(pluginConfig) {
         return {
             onParseConfig: function () {
                 fp.config.enableTime = false;
+                fp.config.monthYearWheel = false;
+                fp.config.showMonthNavArrows = true;
             },
             onValueUpdate: setCurrentlySelected,
             onKeyDown: onKeyDown,

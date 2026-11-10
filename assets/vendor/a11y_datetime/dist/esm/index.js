@@ -877,10 +877,9 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         if (!self.config.inline && !self.config.static)
             bind(window, "resize", debouncedResize);
+        bind(window.document, "mousedown", documentClick);
         if (window.ontouchstart !== undefined)
             bind(window.document, "touchstart", documentClick);
-        else
-            bind(window.document, "mousedown", documentClick);
         bind(window.document, "focus", documentClick, { capture: true });
         if (self.config.clickOpens === true) {
             if (self.config.focusOpens === true) {
@@ -2091,12 +2090,14 @@ function FlatpickrInstance(element, instanceConfig) {
                     self.minuteElement !== undefined &&
                     self.hourElement !== undefined &&
                     self.input.value !== "" &&
-                    self.input.value !== undefined &&
-                    self.config &&
+                    self.input.value !== undefined) {
+                    updateTime();
+                }
+                self.close();
+                if (self.config &&
                     self.config.mode === "range" &&
                     self.selectedDates.length === 1)
                     self.clear(false);
-                self.close();
             }
         }
     }
@@ -2429,9 +2430,12 @@ function FlatpickrInstance(element, instanceConfig) {
                         var headerPrimary = !self.config.noCalendar
                             ? self.config.monthYearWheel
                                 ? monthYearWheelTrigger
-                                : self.monthsDropdownContainer ||
-                                    self.currentYearElement ||
-                                    prevMonthEnabled
+                                :
+                                    [
+                                        self.monthsDropdownContainer,
+                                        self.currentYearElement,
+                                        prevMonthEnabled,
+                                    ].find(function (el) { return el !== undefined && el.isConnected; })
                             : undefined;
                         var tabOrder = [
                             prevMonthEnabled,
@@ -3229,7 +3233,6 @@ function FlatpickrInstance(element, instanceConfig) {
                 : "datetime-local"
             : "date";
         self.mobileInput = createElement("input", self.input.className + " flatpickr-mobile");
-        self.mobileInput.tabIndex = 1;
         self.mobileInput.type = inputType;
         self.mobileInput.disabled = self.input.disabled;
         self.mobileInput.required = self.input.required;
@@ -3249,6 +3252,7 @@ function FlatpickrInstance(element, instanceConfig) {
             self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
         if (self.input.getAttribute("step"))
             self.mobileInput.step = String(self.input.getAttribute("step"));
+        linkMobileInputLabel(self.mobileInput);
         self.input.type = "hidden";
         if (self.altInput !== undefined)
             self.altInput.type = "hidden";
@@ -3261,6 +3265,45 @@ function FlatpickrInstance(element, instanceConfig) {
             self.setDate(getEventTarget(e).value, false, self.mobileFormatStr);
             triggerEvent("onChange");
             triggerEvent("onClose");
+        });
+    }
+    function linkMobileInputLabel(mobileInput) {
+        var original = self.input;
+        var labels = [];
+        if (original.id && typeof document !== "undefined") {
+            var escaped = typeof CSS !== "undefined" && CSS.escape
+                ? CSS.escape(original.id)
+                : original.id.replace(/"/g, '\\"');
+            document
+                .querySelectorAll("label[for=\"".concat(escaped, "\"]"))
+                .forEach(function (label) { return labels.push(label); });
+        }
+        var wrapping = original.closest("label");
+        if (wrapping && labels.indexOf(wrapping) === -1)
+            labels.push(wrapping);
+        var labelledBy = original.getAttribute("aria-labelledby");
+        if (labelledBy) {
+            mobileInput.setAttribute("aria-labelledby", labelledBy);
+        }
+        else if (labels.length > 0) {
+            mobileInput.setAttribute("aria-labelledby", labels
+                .map(function (label, i) {
+                if (!label.id)
+                    label.id = "".concat(calendarInstanceId, "-label").concat(i || "");
+                return label.id;
+            })
+                .join(" "));
+        }
+        [
+            "aria-label",
+            "aria-describedby",
+            "aria-invalid",
+            "aria-required",
+            "autocomplete",
+        ].forEach(function (name) {
+            var value = original.getAttribute(name);
+            if (value !== null)
+                mobileInput.setAttribute(name, value);
         });
     }
     function toggle(e) {
