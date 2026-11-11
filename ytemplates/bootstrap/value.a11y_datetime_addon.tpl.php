@@ -17,9 +17,9 @@ if (isset($this->params['warning_messages'][$this->getId()]) && !$this->params['
     $notice[] = '<span class="text-warning">' . rex_i18n::translate($this->params['warning_messages'][$this->getId()]) . '</span>';
 }
 
-// Die Konfigurationszusammenfassung ist eine Backend-Hilfe für Redakteure
-// (zeigt z.B. das erwartete Format), im Frontend-Formular hat sie nichts verloren.
-if (rex::isBackend()) {
+// Die Konfigurationszusammenfassung (Typ, Minuten-Schritt, Locale …) ist eine Hilfe beim Einrichten
+// des Feldes – nur für Admins im Backend; Redakteure sehen nur den Hinweistext des Feldes.
+if (rex::isBackend() && rex::getUser()?->isAdmin()) {
     $summaryBits = [];
     if ('' !== (string) ($configSummary['type'] ?? '')) {
         $summaryBits[] = rex_i18n::msg('a11y_datetime_yform_summary_type', rex_escape((string) $configSummary['type']));
@@ -45,7 +45,15 @@ if (rex::isBackend()) {
     }
 }
 
-$noticeHtml = [] !== $notice ? '<p class="help-block small">' . implode('<br />', $notice) . '</p>' : '';
+// Hinweis mit dem Feld verknüpfen (aria-describedby): der Picker übernimmt das für das sichtbare
+// Eingabefeld (altInput), Screenreader lesen den Hinweis dann mit vor.
+$noticeHtml = '';
+if ([] !== $notice) {
+    $noticeId = ((string) ($inputAttributes['id'] ?? $this->getFieldId())) . '-notice';
+    $describedBy = trim(((string) ($inputAttributes['aria-describedby'] ?? '')) . ' ' . $noticeId);
+    $inputAttributes['aria-describedby'] = $describedBy;
+    $noticeHtml = '<p class="help-block small" id="' . rex_escape($noticeId) . '">' . implode('<br />', $notice) . '</p>';
+}
 $classGroup = trim('form-group ' . $this->getHTMLClass() . ' ' . $this->getWarningClass());
 ?>
 <div class="<?= $classGroup ?>" id="<?= $this->getHTMLId() ?>">

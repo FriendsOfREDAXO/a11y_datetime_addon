@@ -1,4 +1,4 @@
-/* a11y_datetime v5.3.2, based on flatpickr, @license MIT */
+/* a11y_datetime v5.3.3, based on flatpickr, @license MIT */
 "use strict";
 var __a11y_datetime_bundle = (() => {
   var __defProp = Object.defineProperty;
@@ -3705,6 +3705,7 @@ var __a11y_datetime_bundle = (() => {
         self.altInput.required = self.input.required;
         self.altInput.tabIndex = self.input.tabIndex;
         self.altInput.type = "text";
+        linkReplacementInputLabel(self.altInput);
         self.input.setAttribute("type", "hidden");
         if (!self.config.static && self.input.parentNode)
           self.input.parentNode.insertBefore(
@@ -3748,7 +3749,7 @@ var __a11y_datetime_bundle = (() => {
         self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
       if (self.input.getAttribute("step"))
         self.mobileInput.step = String(self.input.getAttribute("step"));
-      linkMobileInputLabel(self.mobileInput);
+      linkReplacementInputLabel(self.mobileInput);
       self.input.type = "hidden";
       if (self.altInput !== void 0) self.altInput.type = "hidden";
       try {
@@ -3769,7 +3770,7 @@ var __a11y_datetime_bundle = (() => {
         triggerEvent("onClose");
       });
     }
-    function linkMobileInputLabel(mobileInput) {
+    function linkReplacementInputLabel(replacement) {
       const original = self.input;
       const labels = [];
       if (original.id && typeof document !== "undefined") {
@@ -3780,9 +3781,9 @@ var __a11y_datetime_bundle = (() => {
       if (wrapping && labels.indexOf(wrapping) === -1) labels.push(wrapping);
       const labelledBy = original.getAttribute("aria-labelledby");
       if (labelledBy) {
-        mobileInput.setAttribute("aria-labelledby", labelledBy);
+        replacement.setAttribute("aria-labelledby", labelledBy);
       } else if (labels.length > 0) {
-        mobileInput.setAttribute(
+        replacement.setAttribute(
           "aria-labelledby",
           labels.map((label, i) => {
             if (!label.id) label.id = `${calendarInstanceId}-label${i || ""}`;
@@ -3798,7 +3799,7 @@ var __a11y_datetime_bundle = (() => {
         "autocomplete"
       ].forEach((name) => {
         const value = original.getAttribute(name);
-        if (value !== null) mobileInput.setAttribute(name, value);
+        if (value !== null) replacement.setAttribute(name, value);
       });
     }
     function toggle(e) {
