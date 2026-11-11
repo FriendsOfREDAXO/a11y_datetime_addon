@@ -3209,6 +3209,7 @@ function FlatpickrInstance(element, instanceConfig) {
             self.altInput.required = self.input.required;
             self.altInput.tabIndex = self.input.tabIndex;
             self.altInput.type = "text";
+            linkReplacementInputLabel(self.altInput);
             self.input.setAttribute("type", "hidden");
             if (!self.config.static && self.input.parentNode)
                 self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
@@ -3252,7 +3253,7 @@ function FlatpickrInstance(element, instanceConfig) {
             self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
         if (self.input.getAttribute("step"))
             self.mobileInput.step = String(self.input.getAttribute("step"));
-        linkMobileInputLabel(self.mobileInput);
+        linkReplacementInputLabel(self.mobileInput);
         self.input.type = "hidden";
         if (self.altInput !== undefined)
             self.altInput.type = "hidden";
@@ -3267,7 +3268,7 @@ function FlatpickrInstance(element, instanceConfig) {
             triggerEvent("onClose");
         });
     }
-    function linkMobileInputLabel(mobileInput) {
+    function linkReplacementInputLabel(replacement) {
         var original = self.input;
         var labels = [];
         if (original.id && typeof document !== "undefined") {
@@ -3283,10 +3284,10 @@ function FlatpickrInstance(element, instanceConfig) {
             labels.push(wrapping);
         var labelledBy = original.getAttribute("aria-labelledby");
         if (labelledBy) {
-            mobileInput.setAttribute("aria-labelledby", labelledBy);
+            replacement.setAttribute("aria-labelledby", labelledBy);
         }
         else if (labels.length > 0) {
-            mobileInput.setAttribute("aria-labelledby", labels
+            replacement.setAttribute("aria-labelledby", labels
                 .map(function (label, i) {
                 if (!label.id)
                     label.id = "".concat(calendarInstanceId, "-label").concat(i || "");
@@ -3303,7 +3304,7 @@ function FlatpickrInstance(element, instanceConfig) {
         ].forEach(function (name) {
             var value = original.getAttribute(name);
             if (value !== null)
-                mobileInput.setAttribute(name, value);
+                replacement.setAttribute(name, value);
         });
     }
     function toggle(e) {

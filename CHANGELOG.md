@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an diesem Addon werden in dieser Datei dokumentiert.
 
+## [3.2.2] - 2026-11-11
+
+### Fixed
+- Vendor-Update auf [a11y_datetime v5.3.3](https://github.com/FriendsOfREDAXO/a11y_datetime/releases/tag/v5.3.3): Das **sichtbare Eingabefeld** (bei gesetztem `alt_format` bzw. `altInput`) hatte keinen zugänglichen Namen – die `<label for>` zeigte auf das versteckte Originalfeld. Screenreader lasen das Feld ohne Beschriftung vor (axe/Lighthouse: „Form elements do not have associated labels“). Es ist jetzt wie das mobile Feld per `aria-labelledby` mit dem Label verknüpft und übernimmt `aria-describedby` u. a. vom Originalfeld.
+- YForm-Feld: Der **Hinweistext** ist jetzt per `aria-describedby` mit dem Feld verknüpft und wird von Screenreadern mit vorgelesen.
+
+### Changed
+- YForm-Feld: Die Konfigurationszusammenfassung unter dem Feld (Typ, Minuten-Schritt, Locale …) erscheint nur noch für Admins. Redakteure sehen nur den Hinweistext des Feldes.
+
 ## [3.2.1] - 2026-11-10
 
 ### Fixed
